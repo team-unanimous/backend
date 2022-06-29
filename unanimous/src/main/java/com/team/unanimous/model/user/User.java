@@ -1,11 +1,15 @@
 package com.team.unanimous.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.team.unanimous.dto.requestDto.SignupRequestDto;
 import com.team.unanimous.model.meeting.Meeting;
 import com.team.unanimous.model.team.Team;
+import com.team.unanimous.model.team.TeamUser;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,14 +29,25 @@ public class User {
     private String nickname;
 
     @JsonIgnore
-    @Column(nullable = false)
+    @Column
     private String password;
 
-    @ManyToOne
-    @JoinColumn(name = "team_id")
-    private Team team;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user")
+    private List<TeamUser> teamList;
 
     @ManyToOne
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
+
+    @Column
+    private String userImage;
+
+
+    public User(SignupRequestDto requestDto) {
+        this.username = requestDto.getUsername();
+        this.nickname = requestDto.getNickname();
+        this.password = requestDto.getPassword();
+        this.userImage = requestDto.getUserImage();
+    }
 }

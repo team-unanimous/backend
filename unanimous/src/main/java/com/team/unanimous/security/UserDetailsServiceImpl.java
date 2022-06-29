@@ -1,7 +1,7 @@
 package com.team.unanimous.security;
 
-import com.team.unanimous.model.User;
-import com.team.unanimous.repository.UserRepository;
+import com.team.unanimous.model.user.User;
+import com.team.unanimous.repository.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

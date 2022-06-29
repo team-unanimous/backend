@@ -1,6 +1,6 @@
 package com.team.unanimous.security;
 
-import com.team.unanimous.model.User;
+import com.team.unanimous.model.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

@@ -85,12 +85,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .anyRequest()
                 .permitAll()
-                .and()
-                // [로그아웃 기능]
-                .logout()
-                // 로그아웃 요청 처리 URL
-                .logoutUrl("/logout")
-                .permitAll()
+//                .and()
+//                // [로그아웃 기능]
+//                .logout()
+//                // 로그아웃 요청 처리 URL
+//                .logoutUrl("/logout")
+//                .permitAll()
                 .and()
                 .exceptionHandling()
                 // "접근 불가" 페이지 URL 설정

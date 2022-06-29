@@ -2,8 +2,8 @@ package com.team.unanimous.security.provider;
 
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
-import com.team.unanimous.model.User;
-import com.team.unanimous.repository.UserRepository;
+import com.team.unanimous.model.user.User;
+import com.team.unanimous.repository.user.UserRepository;
 import com.team.unanimous.security.UserDetailsImpl;
 import com.team.unanimous.security.jwt.JwtDecoder;
 import lombok.RequiredArgsConstructor;
