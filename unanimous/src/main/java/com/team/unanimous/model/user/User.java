@@ -44,11 +44,27 @@ public class User {
     @Column
     private String userImage;
 
+    @Column(unique = true)
+    private Long kakaoId;
+
 
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();
-        this.nickname = requestDto.getNickname();
         this.password = requestDto.getPassword();
-        this.userImage = requestDto.getUserImage();
+        this.kakaoId = null;
+    }
+
+    //카카오 회원가입 + 구글 회원가입
+    @Builder
+    public User( String username, String nickname, String password, String userImage, Long kakaoId) {
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+        this.userImage = userImage;
+        this.kakaoId = kakaoId;
+    }
+
+    public void update(String nickname){
+        this.nickname = nickname;
     }
 }

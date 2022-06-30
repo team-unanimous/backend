@@ -133,9 +133,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //이메일 중복체크 및 인증메일 발송
         skipPathList.add("POST,/api/users/emails");
         skipPathList.add("POST,/emailCheck");
-
-
-
+        skipPathList.add("GET,/user/kakao/callback");
+        skipPathList.add("POST,/api/users/signup/profile/**");
+        skipPathList.add("GET,/login/google/callback/**");
         FilterSkipMatcher matcher = new FilterSkipMatcher(
                 skipPathList,
                 "/**"
