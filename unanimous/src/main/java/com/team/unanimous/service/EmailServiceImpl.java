@@ -24,11 +24,10 @@ public class EmailServiceImpl implements EmailService{
         MimeMessage  message = emailSender.createMimeMessage();
 
         message.addRecipients(RecipientType.TO, to);//보내는 대상
-        message.setSubject("Babble회원가입 이메일 인증");//제목
-
+        message.setSubject("Unanimous회원가입 이메일 인증");//제목
         String msgg="";
         msgg+= "<div style='margin:100px;'>";
-        msgg+= "<h1> 안녕하세요 Babble입니다. </h1>";
+        msgg+= "<h1> 안녕하세요 Unanimous입니다. </h1>";
         msgg+= "<br>";
         msgg+= "<p>아래 코드를 회원가입 창으로 돌아가 입력해주세요<p>";
         msgg+= "<br>";
@@ -42,7 +41,6 @@ public class EmailServiceImpl implements EmailService{
         msgg+= "</div>";
         message.setText(msgg, "utf-8", "html");//내용
         message.setFrom(new InternetAddress("UnanimousTeam7@gmail.com","unanimousTeam7"));//보내는 사람
-
         return message;
     }
 
@@ -50,7 +48,7 @@ public class EmailServiceImpl implements EmailService{
         StringBuffer key = new StringBuffer();
         Random rnd = new Random();
 
-        for (int i = 0; i < 4; i++) { // 인증코드 8자리
+        for (int i = 0; i < 4; i++) { // 인증코드 4자리
             int index = rnd.nextInt(3); // 0~2 까지 랜덤
 
             switch (index) {
@@ -71,6 +69,8 @@ public class EmailServiceImpl implements EmailService{
 
         return key.toString();
     }
+
+
     @Override
     public String sendSimpleMessage(String to)throws Exception {
         // TODO Auto-generated method stub

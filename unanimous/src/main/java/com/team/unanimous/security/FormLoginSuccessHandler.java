@@ -20,6 +20,8 @@ public class FormLoginSuccessHandler extends SavedRequestAwareAuthenticationSucc
 
         final String token = JwtTokenUtils.generateJwtToken(userDetails);
         response.addHeader(AUTH_HEADER, TOKEN_TYPE + " " + token);
+        System.out.println(token);
+
 
 //        //User nicakname 내려주기 - 동관 천재님꺼 참고
 //        response.setContentType("application/json");

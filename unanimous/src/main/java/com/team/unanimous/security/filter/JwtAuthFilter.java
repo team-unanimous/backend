@@ -41,6 +41,7 @@ public class JwtAuthFilter extends AbstractAuthenticationProcessingFilter {
             String tokenPayload = request.getHeader("Authorization");
             if (tokenPayload == null) {
                 throw new CustomException(ErrorCode.USER_PASSWORD_NOT_FOUND);
+                //로그인 페이지로 넘겨준다.
                 //response.sendRedirect("/user/loginView");
             }
 
