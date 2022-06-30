@@ -1,15 +1,14 @@
 package com.team.unanimous.repository.meeting;
 
 import com.team.unanimous.model.meeting.Meeting;
+import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.team.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface MeetingRepository extends JpaRepository<Meeting, Long> {
+public interface MeetingUserRepository extends JpaRepository<MeetingUser, Long> {
 
-    List<Meeting> findAllById(Team team);
-
-    Meeting findAllByTeam(Team team);
+    List<MeetingUser> findAllByMeeting(Meeting meeting);
 
 }

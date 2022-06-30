@@ -16,6 +16,8 @@ public class TeamUserResponseDto {
 
     private String teamname;
 
+    private String uuid;
+
     private String nickname;
 
 //    public TeamUserResponseDto(Long id, Team team, User user) {
@@ -27,6 +29,8 @@ public class TeamUserResponseDto {
     public TeamUserResponseDto(Team team, User user) {
         this.id = team.getId();
         this.teamname = team.getTeamname();
+        this.uuid = team.getUuid();
         this.nickname = user.getNickname();
     }
+
 }

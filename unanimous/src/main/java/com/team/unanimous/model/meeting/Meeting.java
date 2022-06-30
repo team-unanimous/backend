@@ -1,11 +1,11 @@
 package com.team.unanimous.model.meeting;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.user.User;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,12 +26,17 @@ public class Meeting {
     @Column(nullable = false)
     private String meetingDate;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User meetingCreator;
+
+    @JsonManagedReference
     @OneToMany(mappedBy = "meeting")
     private List<Issue> issue;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "meeting")
+    private List<MeetingUser> user;
 
     @ManyToOne
     @JoinColumn(name = "team_id")

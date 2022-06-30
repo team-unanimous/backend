@@ -5,6 +5,7 @@ import com.team.unanimous.dto.requestDto.TeamInviteRequestDto;
 import com.team.unanimous.dto.requestDto.TeamRequestDto;
 import com.team.unanimous.dto.responseDto.TeamMainResponseDto;
 import com.team.unanimous.dto.responseDto.TeamResponseDto;
+import com.team.unanimous.dto.responseDto.TeamUserMainResponseDto;
 import com.team.unanimous.dto.responseDto.TeamUserResponseDto;
 import com.team.unanimous.security.UserDetailsImpl;
 import com.team.unanimous.service.TeamService;
@@ -59,7 +60,7 @@ public class TeamController {
 
     // 팀 메인 게시판
     @GetMapping("/api/teams/{teamId}")
-    public TeamMainResponseDto getMain(@PathVariable Long teamId){
+    public TeamUserMainResponseDto getMain(@PathVariable Long teamId){
         return teamService.getMain(teamId);
     }
 

@@ -1,17 +1,17 @@
 package com.team.unanimous.service;
 
 
+import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.TeamInviteRequestDto;
 import com.team.unanimous.dto.requestDto.TeamRequestDto;
-import com.team.unanimous.dto.responseDto.TeamMainMeetingResponseDto;
-import com.team.unanimous.dto.responseDto.TeamMainResponseDto;
-import com.team.unanimous.dto.responseDto.TeamResponseDto;
-import com.team.unanimous.dto.responseDto.TeamUserResponseDto;
+import com.team.unanimous.dto.responseDto.*;
 import com.team.unanimous.model.meeting.Meeting;
+import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.team.TeamUser;
 import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.meeting.MeetingRepository;
+import com.team.unanimous.repository.meeting.MeetingUserRepository;
 import com.team.unanimous.repository.team.TeamRepository;
 import com.team.unanimous.repository.team.TeamUserRepository;
 import com.team.unanimous.repository.user.UserRepository;
@@ -36,6 +36,8 @@ public class TeamService {
 
     private final MeetingRepository meetingRepository;
 
+    private final MeetingUserRepository meetingUserRepository;
+
     //팀 생성
     @Transactional
     public ResponseEntity createTeam(TeamRequestDto requestDto, UserDetailsImpl userDetails){
@@ -58,8 +60,6 @@ public class TeamService {
     public List<TeamUserResponseDto> getTeams(UserDetailsImpl userDetails){
         User user = userRepository.findUserById(userDetails.getUser().getId());
         List<TeamUser> teamUserList = teamUserRepository.findAllByUser(user);
-        System.out.println(user);
-        System.out.println(teamUserList);
         List<TeamUserResponseDto> responseDtoList = new ArrayList<>();
         for (TeamUser teamUser : teamUserList) {
             TeamUserResponseDto responseDto = new TeamUserResponseDto(teamUser.getTeam(), teamUser.getUser());
@@ -116,29 +116,53 @@ public class TeamService {
 
     // 팀 메인 게시판
     @Transactional
-    public TeamMainResponseDto getMain(Long teamId){
+    public TeamUserMainResponseDto getMain(Long teamId){
         Team team = teamRepository.findTeamById(teamId);
-        List<User> user = userRepository.findAllById(team);
-        List<Meeting> meetingList = meetingRepository.findAllById(team);
-        List<TeamMainMeetingResponseDto> teamMainMeetingResponseDtos = new ArrayList<>();
-        for (Meeting meeting : meetingList) {
-            List<User> user1 = userRepository.findAllById(meeting);
-            TeamMainMeetingResponseDto teamMainMeetingResponseDto = new TeamMainMeetingResponseDto(
-                    meeting.getMeetingTitle(),
-                    meeting.getMeetingDate(),
-                    user1
-            );
-            teamMainMeetingResponseDtos.add(teamMainMeetingResponseDto);
-
+        Meeting meeting = meetingRepository.findAllByTeam(team);
+        List<TeamUser> teamUserList = teamUserRepository.findAllByTeam(team);
+        List<NicknameResponseDto> nicknameResponseDtos = new ArrayList<>();
+        for (TeamUser teamUser : teamUserList){
+            NicknameResponseDto nicknameResponseDto = new NicknameResponseDto(teamUser.getUser());
+            nicknameResponseDtos.add(nicknameResponseDto);
         }
+        List<MeetingUser> meetingUsers = meetingUserRepository.findAllByMeeting(meeting);
+        List<TeamUserMainMeetingResponseDto> teamUserMainMeetingResponseDtos = new ArrayList<>();
+        for (MeetingUser meetingUser : meetingUsers){
+            TeamUserMainMeetingResponseDto teamUserMainMeetingResponseDto = new TeamUserMainMeetingResponseDto(
+                    meetingUser.getMeeting().getTeam(),
+                    meetingUsers);
+            teamUserMainMeetingResponseDtos.add(teamUserMainMeetingResponseDto);
+        }
+        TeamUserMainResponseDto  teamUserMainResponseDto = new TeamUserMainResponseDto(team,nicknameResponseDtos,teamUserMainMeetingResponseDtos);
+        return teamUserMainResponseDto;
 
-        TeamMainResponseDto teamMainResponseDto = new TeamMainResponseDto(
-                team.getId(),
-                team.getTeamname(),
-                user,
-                teamMainMeetingResponseDtos);
-        return teamMainResponseDto;
+//        List<User> user = userRepository.findAllById(team);
+//        List<Meeting> meetingList = meetingRepository.findAllById(team);
+//        List<TeamMainMeetingResponseDto> teamMainMeetingResponseDtos = new ArrayList<>();
+//        for (Meeting meeting : meetingList) {
+//            List<User> user1 = userRepository.findAllById(meeting);
+//            TeamMainMeetingResponseDto teamMainMeetingResponseDto = new TeamMainMeetingResponseDto(
+//                    meeting.getMeetingTitle(),
+//                    meeting.getMeetingDate(),
+//                    user1
+//            );
+//            teamMainMeetingResponseDtos.add(teamMainMeetingResponseDto);
+//
+//        }
+//
+//        TeamMainResponseDto teamMainResponseDto = new TeamMainResponseDto(
+//                team.getId(),
+//                team.getTeamname(),
+//                user,
+//                teamMainMeetingResponseDtos);
+//        return teamMainResponseDto;
     }
+
+    // 팀 프로필 수정 Fetch 오늘까지 해보는걸로
+    // 팀 프로필 사진, 팀 네임
+
+
+    // 팀원 강퇴
 
 
 

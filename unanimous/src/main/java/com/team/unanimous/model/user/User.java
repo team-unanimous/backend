@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.unanimous.dto.requestDto.SignupRequestDto;
 import com.team.unanimous.model.meeting.Meeting;
+import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.team.TeamUser;
 import lombok.*;
@@ -36,9 +37,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<TeamUser> teamList;
 
-    @ManyToOne
-    @JoinColumn(name = "meeting_id")
-    private Meeting meeting;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user")
+    private List<MeetingUser> meeting;
 
     @Column
     private String userImage;
