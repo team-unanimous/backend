@@ -26,6 +26,33 @@ dependencies {
     runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // 스프링 시큐리티
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    //테스트 시큐리티
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    // Thymeleaf (뷰 템플릿 엔진)
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // 확인 (유효성 검사)
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // 이메일 인증
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    // 인증번호 유효시간 동안 저장
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // swagger 설정
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+
+    //JWT Token 을 위한 dependency
+    implementation 'javax.xml.bind:jaxb-api'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'commons-codec:commons-codec:1.15'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    implementation 'com.auth0:java-jwt:3.19.2'
+    // 구글 로그인
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 }
 
 tasks.named('test') {
