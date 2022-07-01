@@ -20,6 +20,10 @@ public class Meeting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private enum status{
+        NOW, DONE, YET
+    }
+
     @Column(nullable = false)
     private String meetingTitle;
 
