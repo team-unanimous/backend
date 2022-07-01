@@ -20,13 +20,13 @@ public class TeamUserMainResponseDto {
 
     private List<NicknameResponseDto> user;
 
-    private List<TeamUserMainMeetingResponseDto> meeting;
+//    private List<TeamUserMainMeetingResponseDto> meeting;
 
-    public TeamUserMainResponseDto(Team team, List<NicknameResponseDto> nicknameResponseDtos, List<TeamUserMainMeetingResponseDto> teamUserMainMeetingResponseDtos) {
+    public TeamUserMainResponseDto(Team team, List<NicknameResponseDto> nicknameResponseDtos) {
         this.teamid = team.getId();
         this.teamname = team.getTeamname();
         this.user = nicknameResponseDtos;
 //        this.users = team.getUserList();
-        this.meeting = teamUserMainMeetingResponseDtos;
+//        this.meeting = teamUserMainMeetingResponseDtos;
     }
 }

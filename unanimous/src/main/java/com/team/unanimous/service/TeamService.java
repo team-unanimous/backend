@@ -45,7 +45,7 @@ public class TeamService {
     public ResponseEntity createTeam(TeamRequestDto requestDto, UserDetailsImpl userDetails){
         User user = userRepository.findUserById(userDetails.getUser().getId());
         if (user == null){
-            throw new IllegalArgumentException("읔");
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
         Team team = Team.builder()
                 .teamname(requestDto.getTeamname())
@@ -64,7 +64,7 @@ public class TeamService {
         List<TeamUser> teamUserList = teamUserRepository.findAllByUser(user);
         List<TeamUserResponseDto> responseDtoList = new ArrayList<>();
         for (TeamUser teamUser : teamUserList) {
-            TeamUserResponseDto responseDto = new TeamUserResponseDto(teamUser.getTeam(), teamUser.getUser());
+            TeamUserResponseDto responseDto = new TeamUserResponseDto(teamUser.getTeam());
 //            TeamUserResponseDto responseDto = new TeamUserResponseDto(teamUser.getId(), teamUser.getTeam(), teamUser.getUser());
 
             responseDtoList.add(responseDto);
@@ -74,11 +74,11 @@ public class TeamService {
 
     //초대받은 팀 찾기
     @Transactional
-    public TeamResponseDto findTeamUuid(TeamInviteRequestDto requestDto, UserDetailsImpl userdetails){
+    public TeamResponseDto findTeamUuid(TeamInviteRequestDto requestDto){
         String uuid = requestDto.getUuid();
         Team team = teamRepository.findByUuid(uuid);
         if (team == null){
-            throw new IllegalArgumentException("읔");
+            throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
         }
 //        User user = User.builder()
 //                .username(userdetails.getUsername())
@@ -97,7 +97,7 @@ public class TeamService {
         Team team = teamRepository.findByUuid(uuid);
 
         if (team == null){
-            throw new IllegalArgumentException("읔");
+            throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
         }
         User user = userRepository.findUserById(userDetails.getUser().getId());
         TeamUser teamUser1 = teamUserRepository.findByUser(user);
@@ -125,22 +125,21 @@ public class TeamService {
     @Transactional
     public TeamUserMainResponseDto getMain(Long teamId){
         Team team = teamRepository.findTeamById(teamId);
-        Meeting meeting = meetingRepository.findAllByTeam(team);
         List<TeamUser> teamUserList = teamUserRepository.findAllByTeam(team);
         List<NicknameResponseDto> nicknameResponseDtos = new ArrayList<>();
         for (TeamUser teamUser : teamUserList){
             NicknameResponseDto nicknameResponseDto = new NicknameResponseDto(teamUser.getUser());
             nicknameResponseDtos.add(nicknameResponseDto);
         }
-        List<MeetingUser> meetingUsers = meetingUserRepository.findAllByMeeting(meeting);
-        List<TeamUserMainMeetingResponseDto> teamUserMainMeetingResponseDtos = new ArrayList<>();
-        for (MeetingUser meetingUser : meetingUsers){
-            TeamUserMainMeetingResponseDto teamUserMainMeetingResponseDto = new TeamUserMainMeetingResponseDto(
-                    meetingUser.getMeeting().getTeam(),
-                    meetingUsers);
-            teamUserMainMeetingResponseDtos.add(teamUserMainMeetingResponseDto);
-        }
-        TeamUserMainResponseDto  teamUserMainResponseDto = new TeamUserMainResponseDto(team,nicknameResponseDtos,teamUserMainMeetingResponseDtos);
+//        List<MeetingUser> meetingUsers = meetingUserRepository.findAllByMeeting(meeting);
+//        List<TeamUserMainMeetingResponseDto> teamUserMainMeetingResponseDtos = new ArrayList<>();
+//        for (MeetingUser meetingUser : meetingUsers){
+//            TeamUserMainMeetingResponseDto teamUserMainMeetingResponseDto = new TeamUserMainMeetingResponseDto(
+//                    meetingUser.getMeeting().getTeam(),
+//                    meetingUsers);
+//            teamUserMainMeetingResponseDtos.add(teamUserMainMeetingResponseDto);
+//        }
+        TeamUserMainResponseDto  teamUserMainResponseDto = new TeamUserMainResponseDto(team,nicknameResponseDtos);
         return teamUserMainResponseDto;
 
 //        List<User> user = userRepository.findAllById(team);

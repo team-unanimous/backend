@@ -45,7 +45,7 @@ public class TeamController {
         if (userDetails == null){
             throw new IllegalArgumentException("읔");
         }
-        return teamService.findTeamUuid(requestDto, userDetails);
+        return teamService.findTeamUuid(requestDto);
     }
 
 
