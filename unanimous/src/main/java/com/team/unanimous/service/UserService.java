@@ -2,16 +2,22 @@ package com.team.unanimous.service;
 
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.SignupRequestDto;
+import com.team.unanimous.dto.responseDto.ProfileResponseDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
+import com.team.unanimous.model.Image;
 import com.team.unanimous.model.user.User;
+import com.team.unanimous.repository.ImageRepository;
 import com.team.unanimous.repository.user.UserRepository;
+import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.regex.Pattern;
 
 @Service
@@ -24,6 +30,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
+    private final ImageRepository imageRepository;
+    private final S3Uploader s3Uploader;
 
     // 회원가입
     public ResponseEntity signup(SignupRequestDto requestDto) {
@@ -80,5 +88,15 @@ public class UserService {
         user.update(nickname);
         userRepository.save(user);
         return new ResponseEntity("사용가능한 닉네임입니다", HttpStatus.OK);
+    }
+
+    //s3이미지 업로드
+    public ResponseEntity signupImage(MultipartFile file, Long userId) throws IOException {
+        User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
+        Image image = new Image(s3Uploader.upload(file, "ProfileImage"));
+        imageRepository.save(image);
+        user.updateImage(image);
+        ProfileResponseDto profileResponseDto = new ProfileResponseDto(image);
+        return new ResponseEntity(profileResponseDto, HttpStatus.OK);
     }
 }

@@ -3,6 +3,7 @@ package com.team.unanimous.model.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.unanimous.dto.requestDto.SignupRequestDto;
+import com.team.unanimous.model.Image;
 import com.team.unanimous.model.meeting.Meeting;
 import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.team.Team;
@@ -47,6 +48,10 @@ public class User {
     @Column(unique = true)
     private Long kakaoId;
 
+    @OneToOne
+    @JoinColumn(name = "ImageId")
+    private Image image;
+
 
     public User(SignupRequestDto requestDto) {
         this.username = requestDto.getUsername();
@@ -66,5 +71,9 @@ public class User {
 
     public void update(String nickname){
         this.nickname = nickname;
+    }
+
+    public void updateImage(Image image){
+        this.image = image;
     }
 }

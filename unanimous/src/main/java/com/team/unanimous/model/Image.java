@@ -1,5 +1,6 @@
 package com.team.unanimous.model;
 
+import com.team.unanimous.dto.ImageDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,13 +14,16 @@ public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long iamgeId;
 
     @Column(nullable = false)
     private String filename;
 
     @Column(nullable = false, length = 500)
     private String userImage;
+
+    @Column
+    private String imageUrl;
 
     @Column(nullable = true)
     private Long userId;
@@ -35,4 +39,9 @@ public class Image {
         this.userImage = profileImgUrl;
         this.userId = userId;
     }
+    public Image(ImageDto imageDto){
+        this.filename = imageDto.getFileName();
+        this.imageUrl = imageDto.getImageUrl();
+    }
+
 }

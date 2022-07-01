@@ -53,6 +53,9 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.19.2'
     // 구글 로그인
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    //S3 이미지 업로드를 위한 코드
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 tasks.named('test') {
