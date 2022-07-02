@@ -75,7 +75,7 @@ public class GoogleUserService {
         body.add("client_id" , "143183422842-2ak8n35kamb5k0r7bvj96h4itn3ilp81.apps.googleusercontent.com"); // 리액트
         body.add("client_secret", "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");  // 리액트
         body.add("code", code);
-        body.add("redirect_uri", "http://localhost:3000/login/google/callback"); // 리액트 (local)
+        body.add("redirect_uri", "http://13.125.217.152/login/google/callback"); // 리액트 (local)
 //        body.add("redirect_uri", "https://aws주소/user/google/callback"); // 리액트 (서버 배포 후)
         body.add("grant_type", "authorization_code");
 

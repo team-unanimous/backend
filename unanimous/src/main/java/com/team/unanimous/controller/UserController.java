@@ -42,11 +42,11 @@ public class UserController {
         return userService.signup(requestDto);
     }
 
-    //닉네임생성 및 유효성검사 중복체크
-    @PostMapping("/api/users/signup/profile/{userId}")
-    public ResponseEntity nicknameCheck(@Valid @RequestBody NicknameRequestDto nicknameRequestDto, @PathVariable Long userId) {
-        return userService.nicknameCheck(nicknameRequestDto, userId);
-    }
+//    //닉네임생성 및 이미지 저장(s3 해야함)
+//    @PostMapping("/api/users/signup/profile/{userId}")
+//    public ResponseEntity saveprofile(@Valid @RequestBody NicknameRequestDto nicknameRequestDto, @PathVariable Long userId) {
+//        return userService.saveprofile(nicknameRequestDto, userId);
+//    }
 
     //이메일 인증 요청
     @PostMapping("/api/users/emails")
@@ -84,5 +84,8 @@ public class UserController {
         return new ResponseEntity("구글 사용자로 로그인 처리 되었습니다", HttpStatus.OK);
     }
 
-
+    @PostMapping("/api/users/nickname")
+    public ResponseEntity nicknameCheck(@RequestBody NicknameRequestDto nicknameRequestDto) {
+        return userService.nicknameCheck(nicknameRequestDto);
+    }
 }

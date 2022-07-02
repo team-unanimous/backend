@@ -3,9 +3,7 @@ package com.team.unanimous.model.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.unanimous.dto.requestDto.SignupRequestDto;
-import com.team.unanimous.model.meeting.Meeting;
 import com.team.unanimous.model.meeting.MeetingUser;
-import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.team.TeamUser;
 import lombok.*;
 
