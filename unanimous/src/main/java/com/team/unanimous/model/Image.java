@@ -19,7 +19,7 @@ public class Image {
     @Column(nullable = false)
     private String filename;
 
-    @Column(nullable = false, length = 500)
+    @Column(length = 500)
     private String userImage;
 
     @Column

@@ -86,8 +86,9 @@ public class UserController {
         return new ResponseEntity("구글 사용자로 로그인 처리 되었습니다", HttpStatus.OK);
     }
 
-    @PostMapping("/api/users/image/{userId}")
-    public ResponseEntity signupImage(@RequestParam("ProfileImage") MultipartFile file, @PathVariable Long userId) throws IOException {
+    //프로필 사진
+    @PostMapping("/api/users/signup/{userId}")
+    public ResponseEntity signupImage(@RequestParam("profileImage") MultipartFile file, @PathVariable Long userId) throws IOException {
         return userService.signupImage(file, userId);
     }
 }

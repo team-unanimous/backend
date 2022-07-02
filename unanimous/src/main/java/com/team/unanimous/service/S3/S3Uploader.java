@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
@@ -64,6 +65,11 @@ public class S3Uploader {
         amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
+
+    public String getS3(String fileName){
+        return amazonS3Client.getUrl(bucket, fileName).toString();
+    }
+
     // 로컬에 저장된 이미지 지우기
 
     private void removeNewFile(File targetFile) {
