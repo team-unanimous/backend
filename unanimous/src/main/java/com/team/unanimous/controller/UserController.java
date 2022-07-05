@@ -19,10 +19,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -84,5 +86,9 @@ public class UserController {
         return new ResponseEntity("구글 사용자로 로그인 처리 되었습니다", HttpStatus.OK);
     }
 
-
+    //프로필 사진
+    @PostMapping("/api/users/signup/{userId}")
+    public ResponseEntity signupImage(@RequestParam("profileImage") MultipartFile file, @PathVariable Long userId) throws IOException {
+        return userService.signupImage(file, userId);
+    }
 }

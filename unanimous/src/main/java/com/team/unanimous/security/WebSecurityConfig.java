@@ -136,6 +136,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         skipPathList.add("GET,/user/kakao/callback");
         skipPathList.add("POST,/api/users/signup/profile/**");
         skipPathList.add("GET,/login/google/callback/**");
+        skipPathList.add("POST,/api/users/image/**");
         FilterSkipMatcher matcher = new FilterSkipMatcher(
                 skipPathList,
                 "/**"
