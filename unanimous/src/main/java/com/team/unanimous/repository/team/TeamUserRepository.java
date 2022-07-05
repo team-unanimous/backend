@@ -6,6 +6,7 @@ import com.team.unanimous.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeamUserRepository extends JpaRepository<TeamUser,Long> {
 
@@ -15,8 +16,13 @@ public interface TeamUserRepository extends JpaRepository<TeamUser,Long> {
 
     TeamUser findByUser(User user);
 
-    List<TeamUser> findByTeam(Team team);
 
     List<TeamUser> findAllByTeam(Team team);
+
+    TeamUser findByTeam(Team team);
+
+    List<TeamUser> findAllByTeamId(Long teamId);
+
+    TeamUser findAllByTeamIdAndUserId(Long teamId, Long userId);
 
 }
