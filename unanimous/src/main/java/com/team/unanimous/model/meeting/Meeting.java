@@ -1,6 +1,8 @@
 package com.team.unanimous.model.meeting;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.team.unanimous.dto.requestDto.MeetingRequestDto;
 import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.user.User;
 import lombok.*;
@@ -20,9 +22,12 @@ public class Meeting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private enum status{
+    public enum Status{
         NOW, DONE, YET
     }
+
+    @Column(nullable = false)
+    private Status meetingStatus;
 
     @Column(nullable = false)
     private String meetingTitle;
@@ -30,19 +35,41 @@ public class Meeting {
     @Column(nullable = false)
     private String meetingDate;
 
+    @Column(nullable = false)
+    private String meetingTime;
+
+    @Column(nullable = false)
+    private String meetingSum;
+
+    @Column(nullable = false)
+    private String meetingTheme;
+
+    @Column
+    private String meetingDuration;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User meetingCreator;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "meeting")
-    private List<Issue> issue;
+    private List<Issue> meetingIssue;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "meeting")
     private List<MeetingUser> user;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;
+
+    public void updateMeeting(MeetingRequestDto requestDto){
+        this.meetingTitle = requestDto.getMeetingTitle();
+        this.meetingDate = requestDto.getMeetingDate();
+        this.meetingTime = requestDto.getMeetingTime();
+        this.meetingSum = requestDto.getMeetingSum();
+        this.meetingTheme = requestDto.getMeetingTheme();
+        this.meetingDuration = requestDto.getMeetingDuration();
+    }
 }

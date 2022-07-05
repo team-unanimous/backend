@@ -6,9 +6,12 @@ import lombok.Getter;
 @Getter
 public class NicknameResponseDto {
 
+    private Long userId;
+
     private String nickname;
 
     public NicknameResponseDto(User user) {
+        this.userId = user.getId();
         this.nickname = user.getNickname();
     }
 }

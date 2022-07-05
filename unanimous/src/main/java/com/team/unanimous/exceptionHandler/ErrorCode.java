@@ -18,20 +18,25 @@ public enum ErrorCode {
     INVALID_AUTHORITY(HttpStatus.FORBIDDEN,"권한이 없는 사용자 입니다"),
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
-
+    ISSUE_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 안건을 찾을 수 없습니다"),
+    MEETING_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 미팅을 찾을 수 없습니다"),
     TEAM_NOT_FOUND(HttpStatus.NOT_FOUND,"팀을 찾을 수 없습니다"),
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다"),
     USER_PASSWORD_NOT_FOUND(HttpStatus.NOT_FOUND, "유저의 아이디,비밀번호를 다시 확인해주세요."),
     AUTH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "로그인이 필요한 서비스입니다"),
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
+    EXCESS_TEAM_NUMBER(HttpStatus.CONFLICT,"가입가능한 팀 갯수를 초과했습니다 (최대 5개)"),
+    TEAM_MANAGER_CONFLICT(HttpStatus.CONFLICT,"팀장은 팀 탈퇴 및 자신을 강퇴시킬 수 없습니다"),
     DUPLICATE_TEAM_USER(HttpStatus.CONFLICT,"팀에 중복된 유저가 존재합니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임명이 존재합니다"),
+    DUPLICATE_TEAM_NAME(HttpStatus.CONFLICT,"중복된 팀 이름이 존재합니다"),
     NICKNAME_LEGNTH(HttpStatus.CONFLICT, "닉네임은 최소 2자 이상 10자 이하여야 합니다"),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "중복된 이메일이 존재합니다"),
     USERNAME_WRONG(HttpStatus.CONFLICT, "아이디는 이메일 형식으로 입력해주세요"),
     PASSWORD_LEGNTH(HttpStatus.CONFLICT, "비밀번호는 4자 이상 20자 이하여야 합니다"),
     PASSWORD_WRONG(HttpStatus.CONFLICT, "비밀번호는 영문, 숫자, 특수문자를 포함해야합니다"),
-    PASSWORD_CHECK(HttpStatus.CONFLICT, "비밀번호가 일치하지 않습니다.");
+    PASSWORD_CHECK(HttpStatus.CONFLICT, "비밀번호가 일치하지 않습니다."),
+    MEETING_HAS_DONE(HttpStatus.CONFLICT,"미팅이 이미 진행중이거나 완료되었습니다");
 
 
 
