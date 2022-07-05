@@ -27,4 +27,9 @@ public class MeetingUser {
     @ManyToOne
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
+
+    public MeetingUser(User user, Meeting meeting) {
+        this.user = user;
+        this.meeting = meeting;
+    }
 }

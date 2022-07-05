@@ -1,4 +1,4 @@
-package com.team.unanimous.service;
+package com.team.unanimous.dto.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
