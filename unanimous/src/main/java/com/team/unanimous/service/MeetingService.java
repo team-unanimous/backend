@@ -130,8 +130,9 @@ public class MeetingService {
         if (meeting == null){
             throw new CustomException(ErrorCode.MEETING_NOT_FOUND);
         }
+        User user = meeting.getMeetingCreator();
 
-        MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting);
+        MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting,user);
         return meetingResponseDto;
     }
 
