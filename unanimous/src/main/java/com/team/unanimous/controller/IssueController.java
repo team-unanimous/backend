@@ -3,7 +3,7 @@ package com.team.unanimous.controller;
 import com.team.unanimous.dto.requestDto.IssueRequestDto;
 import com.team.unanimous.dto.responseDto.IssueResponseDto;
 import com.team.unanimous.security.UserDetailsImpl;
-import com.team.unanimous.dto.service.IssueService;
+import com.team.unanimous.service.IssueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

@@ -7,7 +7,6 @@ import com.team.unanimous.model.Image;
 import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.team.TeamUser;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -49,6 +48,7 @@ public class User {
     @OneToOne
     @JoinColumn(name = "ImageId")
     private Image image;
+
 
 
     public User(EmailRequestDto emailRequestDto) {

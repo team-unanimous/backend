@@ -1,4 +1,4 @@
-package com.team.unanimous.dto.service;
+package com.team.unanimous.service;
 
 
 import com.team.unanimous.dto.requestDto.BanRequestDto;

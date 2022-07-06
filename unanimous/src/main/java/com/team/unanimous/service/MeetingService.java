@@ -1,9 +1,12 @@
-package com.team.unanimous.dto.service;
+package com.team.unanimous.service;
 
 import com.team.unanimous.dto.requestDto.MeetingRequestDto;
+import com.team.unanimous.dto.responseDto.IssueResponseDto;
 import com.team.unanimous.dto.responseDto.MeetingResponseDto;
+import com.team.unanimous.dto.responseDto.NicknameResponseDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
+import com.team.unanimous.model.meeting.Issue;
 import com.team.unanimous.model.meeting.Meeting;
 import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.team.Team;
@@ -127,8 +130,9 @@ public class MeetingService {
         if (meeting == null){
             throw new CustomException(ErrorCode.MEETING_NOT_FOUND);
         }
+        User user = meeting.getMeetingCreator();
 
-        MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting);
+        MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting,user);
         return meetingResponseDto;
     }
 

@@ -1,17 +1,17 @@
-package com.team.unanimous.dto.service;
+package com.team.unanimous.service;
 
 import com.team.unanimous.dto.requestDto.EmailRequestDto;
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.PasswordRequestDto;
 import com.team.unanimous.dto.responseDto.ProfileResponseDto;
 import com.team.unanimous.dto.responseDto.SignupResponseDto;
-import com.team.unanimous.dto.service.S3.S3Uploader;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
 import com.team.unanimous.model.Image;
 import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.ImageRepository;
 import com.team.unanimous.repository.user.UserRepository;
+import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

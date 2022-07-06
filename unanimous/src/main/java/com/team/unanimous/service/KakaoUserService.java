@@ -1,4 +1,4 @@
-package com.team.unanimous.dto.service;
+package com.team.unanimous.service;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;

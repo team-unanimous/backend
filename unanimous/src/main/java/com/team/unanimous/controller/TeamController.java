@@ -10,7 +10,7 @@ import com.team.unanimous.dto.responseDto.TeamUserResponseDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
 import com.team.unanimous.security.UserDetailsImpl;
-import com.team.unanimous.dto.service.TeamService;
+import com.team.unanimous.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

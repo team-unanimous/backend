@@ -7,16 +7,15 @@ import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.PasswordRequestDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
-import com.team.unanimous.dto.service.EmailService;
-import com.team.unanimous.dto.service.GoogleUserService;
-import com.team.unanimous.dto.service.KakaoUserService;
-import com.team.unanimous.dto.service.UserService;
+import com.team.unanimous.service.EmailService;
+import com.team.unanimous.service.GoogleUserService;
+import com.team.unanimous.service.KakaoUserService;
+import com.team.unanimous.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -93,7 +92,6 @@ public class UserController {
         }
         return new ResponseEntity("구글 사용자로 로그인 처리 되었습니다", HttpStatus.OK);
     }
-
 
     //프로필 사진
     @PostMapping("/api/users/signup/{userId}")

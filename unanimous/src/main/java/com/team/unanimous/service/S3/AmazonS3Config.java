@@ -1,4 +1,4 @@
-package com.team.unanimous.dto.service.S3;
+package com.team.unanimous.service.S3;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;

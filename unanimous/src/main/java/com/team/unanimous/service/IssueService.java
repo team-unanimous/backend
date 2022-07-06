@@ -1,4 +1,4 @@
-package com.team.unanimous.dto.service;
+package com.team.unanimous.service;
 
 import com.team.unanimous.dto.requestDto.IssueRequestDto;
 import com.team.unanimous.dto.responseDto.IssueResponseDto;
@@ -13,6 +13,7 @@ import com.team.unanimous.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
