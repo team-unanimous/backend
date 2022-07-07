@@ -1,6 +1,5 @@
 package com.team.unanimous.dto.responseDto;
 
-import com.team.unanimous.model.team.Team;
 import lombok.Getter;
 
 @Getter

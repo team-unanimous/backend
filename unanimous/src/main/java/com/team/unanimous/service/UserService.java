@@ -1,8 +1,10 @@
 package com.team.unanimous.service;
 
+import com.team.unanimous.dto.requestDto.EmailRequestDto;
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
-import com.team.unanimous.dto.requestDto.SignupRequestDto;
+import com.team.unanimous.dto.requestDto.PasswordRequestDto;
 import com.team.unanimous.dto.responseDto.ProfileResponseDto;
+import com.team.unanimous.dto.responseDto.SignupResponseDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
 import com.team.unanimous.model.Image;
@@ -33,14 +35,11 @@ public class UserService {
     private final ImageRepository imageRepository;
     private final S3Uploader s3Uploader;
 
-    // 회원가입
-    public ResponseEntity signup(SignupRequestDto requestDto) {
-        String pattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^*+=-]).{4,20}$";
-        String username = requestDto.getUsername();
-        String password = requestDto.getPassword();
-        String passwordCheck = requestDto.getPasswordCheck();
+    // 이메일 인증 및 회원가입
+    public ResponseEntity email(EmailRequestDto emailRequestDto) {
+        String username = emailRequestDto.getUsername();
+        boolean isGoogle = false;
         String usernamePattern = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
-
         // 아아디 정규식 맞지않는 경우 오류메세지를 전달해준다.
         if(username.equals("")) {
             throw new CustomException(ErrorCode.EMPTY_USERNAME);
@@ -49,46 +48,68 @@ public class UserService {
         } else if(userRepository.findByUsername(username).isPresent()){
             throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
-
-        // 비밀번호 정규식에 맞지 않는 경우 오류메세지를 전달해준다.
-        if(requestDto.getPassword().equals("")){
-            throw new CustomException(ErrorCode.EMPTY_PASSWORD);
-        }else if( 4 > password.length() || 20 < password.length()){
-            throw new CustomException(ErrorCode.PASSWORD_LEGNTH);
-        }else if(!Pattern.matches(pattern,password)){
-            throw new CustomException(ErrorCode.PASSWORD_WRONG);
-        } else if(!requestDto.getPassword().equals(passwordCheck)){
-            throw new CustomException(ErrorCode.PASSWORD_CHECK);
-        }
-
         //user 객체에 requestDto에서 받아온값을 넣는다.
-        User user = new User(requestDto);
-        //비밀번호를 암호화한다.
-        password = passwordEncoder.encode(requestDto.getPassword());
-        //비밀번호를 user 객체에 넣는다.
-        user.setPassword(password);
+        User user = new User(emailRequestDto, isGoogle);
         //user 객체를 저장한다.
         userRepository.save(user);
+        SignupResponseDto signupResponseDto = new SignupResponseDto(user,"회원가입 성공");
         //성공적으로 저장했다면 성공적으로 처리된 메세지를 전달해준다.
-        return new ResponseEntity("회원가입이 정상적으로 처리되었습니다", HttpStatus.OK);
+        return new ResponseEntity(signupResponseDto, HttpStatus.OK);
     }
 
+    //비밀번호 생성
+    public ResponseEntity password(Long userId, PasswordRequestDto passwordRequestDto) {
+        String pattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^*+=-]).{6,12}$";
+        String password = passwordRequestDto.getPassword();
+        String passwordCheck = passwordRequestDto.getPasswordCheck();
+
+        // 비밀번호 정규식에 맞지 않는 경우 오류메세지를 전달해준다.
+        if(passwordRequestDto.getPassword().equals("")){
+            throw new CustomException(ErrorCode.EMPTY_PASSWORD);
+        }else if( 6 > password.length() || 12 < password.length()){
+            throw new CustomException(ErrorCode.PASSWORD_LEGNTH);
+        }else if(!Pattern.matches(pattern,password)){
+           throw new CustomException(ErrorCode.PASSWORD_WRONG);
+        } else if(!passwordRequestDto.getPassword().equals(passwordCheck)){
+            throw new CustomException(ErrorCode.PASSWORD_CHECK);
+        }
+        password = passwordEncoder.encode(password);
+        User user1 = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER));
+            user1.setPassword(password);
+            userRepository.save(user1);
+            return new ResponseEntity("비밀번호 저장완료", HttpStatus.OK);
+        }
+
     // 닉네임 중복 체크
-    public ResponseEntity nicknameCheck(NicknameRequestDto nicknameRequestDto, Long userId) {
+    public ResponseEntity nicknameCheck(NicknameRequestDto nicknameRequestDto) {
         String nickname = nicknameRequestDto.getNickname();
         if(nickname.equals("")) {
             throw new CustomException(ErrorCode.EMPTY_NICKNAME);
-        } else if(nickname.length() < 2 || nickname.length() > 15) {
+        } else if(nickname.length() < 2 || nickname.length() > 10) {
             throw new CustomException(ErrorCode.NICKNAME_LEGNTH);
         } else if (userRepository.findByNickname(nickname).isPresent()) {
             throw new CustomException(ErrorCode.DUPLICATE_NICKNAME);
         }
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(ErrorCode.NOT_FOUND_USER));
-        user.update(nickname);
-        userRepository.save(user);
         return new ResponseEntity("사용가능한 닉네임입니다", HttpStatus.OK);
     }
+
+
+    // 닉네임 수정
+    public ResponseEntity nickname(Long userId, NicknameRequestDto nicknameRequestDto) {
+        String nickname = nicknameRequestDto.getNickname();
+        User user1 = userRepository.findById(userId).orElseThrow(
+                () -> new CustomException(ErrorCode.NOT_FOUND_USER));
+        user1.setNickname(nickname);
+        userRepository.save(user1);
+        return new ResponseEntity("닉네임 저장완료", HttpStatus.OK);
+    }
+
+// 닉네임 저장
+//    User user = userRepository.findById(userId).orElseThrow(
+//            () -> new CustomException(ErrorCode.NOT_FOUND_USER));
+//        user.update(nickname);
+//        userRepository.save(user);
 
     //s3이미지 업로드
     public ResponseEntity signupImage(MultipartFile file, Long userId) throws IOException {
