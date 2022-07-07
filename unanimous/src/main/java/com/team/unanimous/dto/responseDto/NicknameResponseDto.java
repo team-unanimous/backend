@@ -10,8 +10,11 @@ public class NicknameResponseDto {
 
     private String nickname;
 
+    private String username;
+
     public NicknameResponseDto(User user) {
         this.userId = user.getId();
         this.nickname = user.getNickname();
+        this.username = user.getUsername();
     }
 }
