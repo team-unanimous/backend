@@ -28,6 +28,8 @@ public class MeetingResponseDto {
 
     private String meetingDuration;
 
+    private String meetingOverTime;
+
     private List<Issue> issues;
 
     public MeetingResponseDto(Meeting meeting, User user){
@@ -53,5 +55,6 @@ public class MeetingResponseDto {
         this.meetingTheme = meeting.getMeetingTheme();
         this.meetingDuration = meeting.getMeetingDuration();
         this.issues = meeting.getMeetingIssue();
+        this.meetingOverTime = meeting.getMeetingOverTime();
     }
 }

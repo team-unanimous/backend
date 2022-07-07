@@ -39,6 +39,24 @@ public class MeetingController {
         return meetingService.getMeetings(teamId);
     }
 
+    // 예약중인 미팅 목록
+    @GetMapping("/api/teams/{teamId}/meetings/yet")
+    public List<MeetingResponseDto> getYetMeetings(@PathVariable Long teamId){
+        return meetingService.getYetMeetings(teamId);
+    }
+
+    // 진행중인 미팅 목록
+    @GetMapping("/api/teams/{teamId}/meetings/now")
+    public List<MeetingResponseDto> getNowMeetings(@PathVariable Long teamId){
+        return meetingService.getNowMeetings(teamId);
+    }
+
+    // 이전 미팅 목록
+    @GetMapping("/api/teams/{teamId}/meetings/done")
+    public List<MeetingResponseDto> getDoneMeetings(@PathVariable Long teamId){
+        return meetingService.getDoneMeetings(teamId);
+    }
+
     // 특정 미팅 조회
     @GetMapping("/api/meetings/{meetingId}")
     public MeetingResponseDto getMeeting(@PathVariable Long meetingId){

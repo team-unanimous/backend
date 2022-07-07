@@ -2,6 +2,7 @@ package com.team.unanimous.controller;
 
 
 import com.team.unanimous.dto.requestDto.BanRequestDto;
+import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.TeamInviteRequestDto;
 import com.team.unanimous.dto.requestDto.TeamRequestDto;
 import com.team.unanimous.dto.responseDto.TeamMainResponseDto;
@@ -96,5 +97,13 @@ public class TeamController {
                                   @RequestBody BanRequestDto requestDto,
                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
         return teamService.exitTeam(teamId,requestDto,userDetails);
+    }
+
+    // 팀장 위임
+    @PostMapping("/api/teams/{teamId}/manager")
+    public ResponseEntity changeTeamManager(@RequestBody NicknameRequestDto nicknameRequestDto,
+                                            @PathVariable Long teamId,
+                                            @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return teamService.changeTeamManager(nicknameRequestDto,teamId,userDetails);
     }
 }

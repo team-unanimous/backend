@@ -3,6 +3,7 @@ package com.team.unanimous.model.meeting;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.unanimous.dto.requestDto.MeetingRequestDto;
+import com.team.unanimous.model.Timestamped;
 import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.user.User;
 import lombok.*;
@@ -16,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class Meeting {
+public class Meeting extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +47,9 @@ public class Meeting {
 
     @Column
     private String meetingDuration;
+
+    @Column
+    private String meetingOverTime;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
