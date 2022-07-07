@@ -38,6 +38,7 @@ public class UserService {
     // 이메일 인증 및 회원가입
     public ResponseEntity email(EmailRequestDto emailRequestDto) {
         String username = emailRequestDto.getUsername();
+        boolean isGoogle = false;
         String usernamePattern = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
         // 아아디 정규식 맞지않는 경우 오류메세지를 전달해준다.
         if(username.equals("")) {
@@ -48,7 +49,7 @@ public class UserService {
             throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
         //user 객체에 requestDto에서 받아온값을 넣는다.
-        User user = new User(emailRequestDto);
+        User user = new User(emailRequestDto, isGoogle);
         //user 객체를 저장한다.
         userRepository.save(user);
         SignupResponseDto signupResponseDto = new SignupResponseDto(user,"회원가입 성공");

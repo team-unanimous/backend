@@ -140,6 +140,7 @@ public class GoogleUserService {
 
         String userName = googleUserInfo.getEmail();
         String nickName = googleUserInfo.getNickname();
+        boolean isGoogle = true;
 
         String password = passwordEncoder.encode(UUID.randomUUID().toString());
         String profileImgUrl = googleUserInfo.getProfileImgUrl();
@@ -157,6 +158,7 @@ public class GoogleUserService {
                     .nickname(nickName)
                     .password(password)
                     .userImage(profileImgUrl)
+                    .isGoogle(isGoogle)
                     .build();
             userRepository.save(googoleUser);
 

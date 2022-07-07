@@ -42,8 +42,8 @@ public class User {
     @Column
     private String userImage;
 
-    @Column(unique = true)
-    private Long kakaoId;
+    @Column
+    private boolean isGoogle;
 
     @OneToOne
     @JoinColumn(name = "ImageId")
@@ -51,8 +51,9 @@ public class User {
 
 
 
-    public User(EmailRequestDto emailRequestDto) {
+    public User(EmailRequestDto emailRequestDto, boolean isGoogle) {
         this.username = emailRequestDto.getUsername();
+        this.isGoogle = isGoogle;
     }
 
     public User(String password) {
@@ -61,12 +62,12 @@ public class User {
 
     //카카오 회원가입 + 구글 회원가입
     @Builder
-    public User( String username, String nickname, String password, String userImage, Long kakaoId) {
+    public User( String username, String nickname, String password, String userImage, boolean isGoogle) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
         this.userImage = userImage;
-        this.kakaoId = kakaoId;
+        this.isGoogle = isGoogle;
     }
 
     public void update(String nickname){

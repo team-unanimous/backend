@@ -18,6 +18,7 @@ public final class JwtTokenUtils {
     // JWT 토큰의 유효기간: 3일 (단위: milliseconds)
     private static final int JWT_TOKEN_VALID_MILLI_SEC = JWT_TOKEN_VALID_SEC * 1000;
 
+    public static final String CLAIM_USER_ID = "userId";
     public static final String CLAIM_EXPIRED_DATE = "EXPIRED_DATE";
     public static final String CLAIM_USER_NAME = "USER_NAME";
     public static final String CLAIM_USER_NICKNAME = "USER_NICKNAME";
@@ -29,6 +30,7 @@ public final class JwtTokenUtils {
         try {
             token = JWT.create()
                     .withIssuer("Shinsang")
+                    .withClaim(CLAIM_USER_ID, userDetails.getUser().getId())
                     .withClaim(CLAIM_USER_NAME, userDetails.getUsername())
                     .withClaim(CLAIM_USER_NICKNAME, userDetails.getUser().getNickname())
                     .withClaim(CLAIM_USER_IMAGE, userDetails.getUser().getUserImage())

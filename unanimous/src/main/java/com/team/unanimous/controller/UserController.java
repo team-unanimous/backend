@@ -9,7 +9,6 @@ import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
 import com.team.unanimous.service.EmailService;
 import com.team.unanimous.service.GoogleUserService;
-import com.team.unanimous.service.KakaoUserService;
 import com.team.unanimous.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,7 +26,7 @@ public class UserController {
 
     private final EmailService emailService;
 
-    private final KakaoUserService kakaoUserService;
+//    private final KakaoUserService kakaoUserService;
 
     private final GoogleUserService googleUserService;
 
