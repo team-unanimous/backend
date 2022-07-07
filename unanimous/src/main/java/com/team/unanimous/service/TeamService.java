@@ -2,6 +2,7 @@ package com.team.unanimous.service;
 
 
 import com.team.unanimous.dto.requestDto.BanRequestDto;
+import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.TeamInviteRequestDto;
 import com.team.unanimous.dto.requestDto.TeamRequestDto;
 import com.team.unanimous.dto.responseDto.NicknameResponseDto;
@@ -13,8 +14,6 @@ import com.team.unanimous.exceptionHandler.ErrorCode;
 import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.team.TeamUser;
 import com.team.unanimous.model.user.User;
-import com.team.unanimous.repository.meeting.MeetingRepository;
-import com.team.unanimous.repository.meeting.MeetingUserRepository;
 import com.team.unanimous.repository.team.TeamRepository;
 import com.team.unanimous.repository.team.TeamUserRepository;
 import com.team.unanimous.repository.user.UserRepository;
@@ -36,11 +35,6 @@ public class TeamService {
     private final UserRepository userRepository;
 
     private final TeamUserRepository teamUserRepository;
-
-    private final MeetingRepository meetingRepository;
-
-    private final MeetingUserRepository meetingUserRepository;
-
 
     // Unanimous 참여하기
     @Transactional
@@ -100,24 +94,8 @@ public class TeamService {
         List<TeamUser> teamUserList = teamUserRepository.findAllByUser(user);
 
         List<TeamUserResponseDto> responseDtoList = new ArrayList<>();
-//        List<NicknameResponseDto> nicknameResponseDtos = new ArrayList<>();
-//        List<TeamUser> teamUserList1 = new ArrayList<>();
-//
-//        List<Long> teamIdList = new ArrayList<>();
-//        for (TeamUser value : teamUserList) {
-//            Long teamId = value.getTeam().getId();
-//            teamIdList.add(teamId);
-//        }
-//        for (int i = 0; i < teamIdList.size(); i++) {
-//            Long teamId = teamIdList.get(i);
-//            teamUserList1 = teamUserRepository.findAllByTeamId(teamId);
-//        }
-//        for (TeamUser teamUser : teamUserList1){
-//            NicknameResponseDto nicknameResponseDto = new NicknameResponseDto(teamUser.getUser());
-//            nicknameResponseDtos.add(nicknameResponseDto);
-//        }
+
         for (TeamUser teamUser : teamUserList) {
-//                int userCnt = nicknameResponseDtos.size();
                 TeamUserResponseDto responseDto = new TeamUserResponseDto(teamUser.getTeam());
                 responseDtoList.add(responseDto);
         }
@@ -235,5 +213,25 @@ public class TeamService {
         teamUserRepository.delete(teamUser);
 
         return ResponseEntity.ok("팀 탈퇴 완료");
+    }
+
+    // 팀장 위임
+    @Transactional
+    public ResponseEntity changeTeamManager(NicknameRequestDto nicknameRequestDto,
+                                            Long teamId,
+                                            UserDetailsImpl userDetails){
+        String user = nicknameRequestDto.getNickname();
+        if (user == null){
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+        Team team = teamRepository.findTeamById(teamId);
+        if (!(userDetails.getUser().getNickname().equals(team.getTeamManager()))){
+            throw new CustomException(ErrorCode.INVALID_AUTHORITY);
+        }
+
+
+        team.setTeamManager(user);
+        teamRepository.save(team);
+        return ResponseEntity.ok(user+" 님이"+team.getTeamname()+" 팀의 팀장이 되었습니다");
     }
 }

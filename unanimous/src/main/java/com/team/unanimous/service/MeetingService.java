@@ -1,21 +1,16 @@
 package com.team.unanimous.service;
 
 import com.team.unanimous.dto.requestDto.MeetingRequestDto;
-import com.team.unanimous.dto.responseDto.IssueResponseDto;
 import com.team.unanimous.dto.responseDto.MeetingResponseDto;
-import com.team.unanimous.dto.responseDto.NicknameResponseDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
-import com.team.unanimous.model.meeting.Issue;
 import com.team.unanimous.model.meeting.Meeting;
 import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.user.User;
-import com.team.unanimous.repository.issue.IssueRepository;
 import com.team.unanimous.repository.meeting.MeetingRepository;
 import com.team.unanimous.repository.meeting.MeetingUserRepository;
 import com.team.unanimous.repository.team.TeamRepository;
-import com.team.unanimous.repository.team.TeamUserRepository;
 import com.team.unanimous.repository.user.UserRepository;
 import com.team.unanimous.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +29,9 @@ public class MeetingService {
 
     private final TeamRepository teamRepository;
 
-    private final TeamUserRepository teamUserRepository;
-
     private final MeetingRepository meetingRepository;
 
     private final MeetingUserRepository meetingUserRepository;
-
-    private final IssueRepository issueRepository;
 
     // 미팅 생성
     @Transactional
@@ -49,6 +40,29 @@ public class MeetingService {
                                         Long teamId){
         String meetingTitle = meetingRequestDto.getMeetingTitle();
         String meetingDate = meetingRequestDto.getMeetingDate();
+        String meetingTime = meetingRequestDto.getMeetingTime();
+        String meetingDuration = meetingRequestDto.getMeetingDuration();
+        String[] meetingTime1 = meetingTime.split(":");
+        String[] meetingDuration1 = meetingDuration.split("시");
+        String meetingTime2 = meetingTime1[0];
+        String meetingDuration2 = meetingDuration1[0];
+        String meetingOverTime1 = "";
+
+        int meetingTimeInt = Integer.parseInt(meetingTime2);
+        int meetingDurationInt = Integer.parseInt(meetingDuration2);
+        int meetingOverTime = meetingTimeInt + meetingDurationInt;
+
+        if (meetingOverTime >= 24){
+            meetingOverTime -= 24;
+        }
+
+        if (meetingOverTime < 10){
+            meetingOverTime1 = "0"+meetingOverTime+":00";
+        } else {
+            meetingOverTime1 = meetingOverTime+":00";
+        }
+
+
         User user = userRepository.findUserById(userDetails.getUser().getId());
         if (user == null){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
@@ -58,14 +72,16 @@ public class MeetingService {
             throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
         }
 
+
         Meeting meeting = Meeting.builder()
                 .meetingStatus(Meeting.Status.YET)
                 .meetingTitle(meetingTitle)
                 .meetingDate(meetingDate)
-                .meetingTime(meetingRequestDto.getMeetingTime())
+                .meetingTime(meetingTime)
                 .meetingSum(meetingRequestDto.getMeetingSum())
                 .meetingTheme(meetingRequestDto.getMeetingTheme())
-                .meetingDuration(meetingRequestDto.getMeetingDuration())
+                .meetingDuration(meetingDuration)
+                .meetingOverTime(meetingOverTime1)
                 .meetingCreator(user)
                 .team(team)
                 .build();
@@ -120,6 +136,51 @@ public class MeetingService {
         for (Meeting meeting : meetingList){
             MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting);
             meetingResponseDtos.add(meetingResponseDto);
+        }
+        return meetingResponseDtos;
+    }
+
+    // 예약 중인 미팅 목록
+    public List<MeetingResponseDto> getYetMeetings(Long teamId){
+        List<Meeting> meetingList = meetingRepository.findAllByTeamId(teamId);
+
+
+        List<MeetingResponseDto> meetingResponseDtos = new ArrayList<>();
+        for (Meeting meeting : meetingList){
+            if (meeting.getMeetingStatus().equals(Meeting.Status.YET)) {
+                MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting);
+                meetingResponseDtos.add(meetingResponseDto);
+            }
+        }
+        return meetingResponseDtos;
+    }
+
+    // 진행중인 미팅 목록
+    public List<MeetingResponseDto> getNowMeetings(Long teamId){
+        List<Meeting> meetingList = meetingRepository.findAllByTeamId(teamId);
+
+
+        List<MeetingResponseDto> meetingResponseDtos = new ArrayList<>();
+        for (Meeting meeting : meetingList){
+            if (meeting.getMeetingStatus().equals(Meeting.Status.NOW)) {
+                MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting);
+                meetingResponseDtos.add(meetingResponseDto);
+            }
+        }
+        return meetingResponseDtos;
+    }
+
+    // 이전 미팅 목록
+    public List<MeetingResponseDto> getDoneMeetings(Long teamId){
+        List<Meeting> meetingList = meetingRepository.findAllByTeamId(teamId);
+
+
+        List<MeetingResponseDto> meetingResponseDtos = new ArrayList<>();
+        for (Meeting meeting : meetingList){
+            if (meeting.getMeetingStatus().equals(Meeting.Status.DONE)) {
+                MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting);
+                meetingResponseDtos.add(meetingResponseDto);
+            }
         }
         return meetingResponseDtos;
     }
