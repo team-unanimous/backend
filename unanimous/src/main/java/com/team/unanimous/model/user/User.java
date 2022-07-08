@@ -3,6 +3,7 @@ package com.team.unanimous.model.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.unanimous.dto.requestDto.EmailRequestDto;
+import com.team.unanimous.dto.requestDto.SignupRequestDto;
 import com.team.unanimous.model.Image;
 import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.team.TeamUser;
@@ -51,14 +52,16 @@ public class User {
 
 
 
-    public User(EmailRequestDto emailRequestDto, boolean isGoogle) {
-        this.username = emailRequestDto.getUsername();
+    public User(String username, String password, boolean isGoogle) {
+        this.username = username;
+        this.password = password;
         this.isGoogle = isGoogle;
+//        this.nickname = nickname;
     }
 
-    public User(String password) {
-        this.password = password;
-    }
+//    public User(String password) {
+//        this.password = password;
+//    }
 
     //카카오 회원가입 + 구글 회원가입
     @Builder
