@@ -46,19 +46,28 @@ public class GoogleUserService {
     public SocialLoginInfoDto googleLogin(String code, HttpServletResponse response) throws JsonProcessingException {
 
         // 1. 인가코드로 엑세스토큰 가져오기
+        System.out.println("1번시작");
         String accessToken = getAccessToken(code);
+        System.out.println("accessToken: " + accessToken);
 
         // 2. 엑세스토큰으로 유저정보 가져오기
+        System.out.println("2번시작");
         SocialLoginInfoDto googleUserInfo = getGoogleUserInfo(accessToken);
+        System.out.println("googleUserInfo: " + googleUserInfo);
 
         // 3. 유저확인 & 회원가입
+        System.out.println("3번시작");
         User foundUser = getUser(googleUserInfo);
+        System.out.println("foundUser: " + foundUser);
 
         // 4. 시큐리티 강제 로그인
+        System.out.println("4번시작");
         Authentication authentication = securityLogin(foundUser);
-
+        System.out.println("authentication: " + authentication);
         // 5. jwt 토큰 발급
+        System.out.println("5번시작");
         jwtToken(response, authentication);
+        System.out.println("jwtToken: " + response.getHeader("Authorization"));
         return googleUserInfo;
     }
 
@@ -75,8 +84,8 @@ public class GoogleUserService {
         body.add("client_id" , "143183422842-2ak8n35kamb5k0r7bvj96h4itn3ilp81.apps.googleusercontent.com"); // 리액트
         body.add("client_secret", "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");  // 리액트
         body.add("code", code);
-        body.add("redirect_uri", "http://localhost:3000/login/google/callback"); // 리액트 (local)
-//        body.add("redirect_uri", "https://aws주소/user/google/callback"); // 리액트 (서버 배포 후)
+        body.add("redirect_uri", "https://shayangju.shop/login/google/callback"); // 리액트 (local)
+        body.add("redirect_uri", "http://localhost:8080/login/google/callback"); // 리액트 (서버 배포 후)
         body.add("grant_type", "authorization_code");
 
         // POST 요청 보내기
@@ -98,23 +107,31 @@ public class GoogleUserService {
 
     // 2. 엑세스토큰으로 유저정보 가져오기
     private SocialLoginInfoDto getGoogleUserInfo(String accessToken) throws JsonProcessingException {
+        System.out.println("2번 유저정보 가져오기시작");
 
         RestTemplate restTemplate = new RestTemplate();
-
+        System.out.println("restTemplate: " + restTemplate);
         ObjectMapper mapper = new ObjectMapper();
+        System.out.println("mapper: " + mapper);
 
         String requestUrl = UriComponentsBuilder.fromHttpUrl("https://openidconnect.googleapis.com/v1/userinfo")
                 .queryParam("access_token", accessToken).encode().toUriString();
+        System.out.println("requestUrl: " + requestUrl);
 
         String resultJson = restTemplate.getForObject(requestUrl, String.class);
+        System.out.println("resultJson: " + resultJson);
 
         Map<String,String> googleUserInfo = mapper.readValue(resultJson, new TypeReference<Map<String, String>>(){});
+        System.out.println("googleUserInfo: " + googleUserInfo);
 
         String userName = googleUserInfo.get("email");
+        System.out.println("userName: " + userName);
         String nickName = googleUserInfo.get("name");
-        String profileImgUrl = googleUserInfo.get("picture");
+        System.out.println("nickName: " + nickName);
+        String userimage = googleUserInfo.get("picture");
+        System.out.println("profileImgUrl: " + userimage);
 
-        return new SocialLoginInfoDto(userName,nickName,profileImgUrl);
+        return new SocialLoginInfoDto(userName,nickName,userimage);
 
     }
 
@@ -123,6 +140,7 @@ public class GoogleUserService {
 
         String userName = googleUserInfo.getEmail();
         String nickName = googleUserInfo.getNickname();
+        boolean isGoogle = true;
 
         String password = passwordEncoder.encode(UUID.randomUUID().toString());
         String profileImgUrl = googleUserInfo.getProfileImgUrl();
@@ -140,6 +158,7 @@ public class GoogleUserService {
                     .nickname(nickName)
                     .password(password)
                     .userImage(profileImgUrl)
+                    .isGoogle(isGoogle)
                     .build();
             userRepository.save(googoleUser);
 

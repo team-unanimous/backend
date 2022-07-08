@@ -2,7 +2,6 @@ package com.team.unanimous.dto.responseDto;
 
 
 import com.team.unanimous.model.team.Team;
-import com.team.unanimous.model.user.User;
 import lombok.Getter;
 
 import java.util.List;

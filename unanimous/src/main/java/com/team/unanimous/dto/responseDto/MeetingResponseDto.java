@@ -4,7 +4,6 @@ import com.team.unanimous.model.meeting.Issue;
 import com.team.unanimous.model.meeting.Meeting;
 import com.team.unanimous.model.user.User;
 import lombok.Getter;
-
 import java.util.List;
 
 @Getter
@@ -44,6 +43,7 @@ public class MeetingResponseDto {
         this.issues = meeting.getMeetingIssue();
         this.meetingCreator =  user.getNickname();
     }
+
 
     public MeetingResponseDto(Meeting meeting){
         this.meetingId = meeting.getId();

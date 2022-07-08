@@ -10,17 +10,17 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User,Long> {
 
-    List<User> findAllById(Team team);
+//    List<User> findAllById(Team team);
 
     User findUserById(Long id);
 
-    List<User> findAllById(Meeting meeting);
+//    List<User> findAllById(Meeting meeting);
 
     Optional<User> findByNickname(String nickname);
 
     Optional<User> findByUsername(String username);
 
-    Optional<User> findByKakaoId(Long kakaoId);
+//    Optional<User> findByKakaoId(Long kakaoId);
 
     User findUserByNickname(String nickname);
 }

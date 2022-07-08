@@ -8,6 +8,7 @@ public enum ErrorCode {
     // 400 Bad Request
     EMPTY_CONTENT(HttpStatus.BAD_REQUEST,"필수입력값이 없습니다."),
     EMPTY_PASSWORD(HttpStatus.BAD_REQUEST,"비밀번호를 입력해주세요."),
+
     EMPTY_NICKNAME(HttpStatus.BAD_REQUEST,"닉네임을 입력해주세요."),
     EMPTY_USERNAME(HttpStatus.BAD_REQUEST,"이메일을 입력해주세요."),
     EMPTY_ISSUE(HttpStatus.BAD_REQUEST,"안건을 입력해주세요."),
@@ -34,7 +35,7 @@ public enum ErrorCode {
     NICKNAME_LEGNTH(HttpStatus.CONFLICT, "닉네임은 최소 2자 이상 10자 이하여야 합니다"),
     DUPLICATE_EMAIL(HttpStatus.CONFLICT, "중복된 이메일이 존재합니다"),
     USERNAME_WRONG(HttpStatus.CONFLICT, "아이디는 이메일 형식으로 입력해주세요"),
-    PASSWORD_LEGNTH(HttpStatus.CONFLICT, "비밀번호는 4자 이상 20자 이하여야 합니다"),
+    PASSWORD_LEGNTH(HttpStatus.CONFLICT, "비밀번호는 6자 이상 12자 이하여야 합니다"),
     PASSWORD_WRONG(HttpStatus.CONFLICT, "비밀번호는 영문, 숫자, 특수문자를 포함해야합니다"),
     PASSWORD_CHECK(HttpStatus.CONFLICT, "비밀번호가 일치하지 않습니다."),
     TEAM_NAME_LENGTH(HttpStatus.CONFLICT,"팀명은 20자 이하여야 합니다"),

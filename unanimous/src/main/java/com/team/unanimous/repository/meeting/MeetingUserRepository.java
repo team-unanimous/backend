@@ -2,7 +2,6 @@ package com.team.unanimous.repository.meeting;
 
 import com.team.unanimous.model.meeting.Meeting;
 import com.team.unanimous.model.meeting.MeetingUser;
-import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
