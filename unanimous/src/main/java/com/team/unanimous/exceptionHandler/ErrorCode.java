@@ -40,6 +40,7 @@ public enum ErrorCode {
     PASSWORD_CHECK(HttpStatus.CONFLICT, "비밀번호가 일치하지 않습니다."),
     TEAM_NAME_LENGTH(HttpStatus.CONFLICT,"팀명은 20자 이하여야 합니다"),
     MEETING_NAME_LENGTH(HttpStatus.CONFLICT,"회의 이름은 20자 이하여야 합니다"),
+    ISSUE_LENGTH(HttpStatus.CONFLICT,"안건 내용은 최대 40자입니다"),
     MEETING_HAS_DONE(HttpStatus.CONFLICT,"미팅이 이미 진행중이거나 완료되었습니다");
 
 

@@ -34,13 +34,15 @@ public class IssueService {
     @Transactional
     public ResponseEntity createIssueYet(Long meetingId,
                                          IssueRequestDto requestDto){
-        String issueContent = requestDto.getIssueContent();
+        String issueContent = requestDto.getIssueContent().trim();
         if (issueContent == null){
             throw new CustomException(ErrorCode.EMPTY_ISSUE);
         } else if (issueContent.isEmpty()){
             throw new CustomException(ErrorCode.EMPTY_ISSUE);
         } else if (issueContent.equals("")){
             throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.length() > 40){
+            throw new CustomException(ErrorCode.ISSUE_LENGTH);
         }
         Meeting meeting = meetingRepository.findMeetingById(meetingId);
         if (meeting == null){
@@ -62,7 +64,16 @@ public class IssueService {
     @Transactional
     public ResponseEntity createIssueNow(Long meetingId,
                                          IssueRequestDto requestDto){
-        String issueContent = requestDto.getIssueContent();
+        String issueContent = requestDto.getIssueContent().trim();
+        if (issueContent == null){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.isEmpty()){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.equals("")){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.length() > 40){
+            throw new CustomException(ErrorCode.ISSUE_LENGTH);
+        }
         Meeting meeting = meetingRepository.findMeetingById(meetingId);
         if (meeting == null){
             throw new CustomException(ErrorCode.MEETING_NOT_FOUND);
@@ -96,12 +107,23 @@ public class IssueService {
             throw new CustomException(ErrorCode.ISSUE_NOT_FOUND);
         }
 
+        String issueContent = requestDto.getIssueContent().trim();
+        if (issueContent == null){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.isEmpty()){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.equals("")){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.length() > 40){
+            throw new CustomException(ErrorCode.ISSUE_LENGTH);
+        }
+
         issue.updateIssue(requestDto);
         issueRepository.save(issue);
         return ResponseEntity.ok("안건 수정 완료");
     }
 
-    // 미팅 예약하기 안건 수정
+    // 미팅 바로 시작하기 안건 수정
     public ResponseEntity updateIssueNow(IssueRequestDto requestDto,
                                       Long meetingId,
                                       Long issueId,
@@ -117,6 +139,17 @@ public class IssueService {
         Issue issue = issueRepository.findIssueById(issueId);
         if (issue == null){
             throw new CustomException(ErrorCode.ISSUE_NOT_FOUND);
+        }
+
+        String issueContent = requestDto.getIssueContent().trim();
+        if (issueContent == null){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.isEmpty()){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.equals("")){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.length() > 40){
+            throw new CustomException(ErrorCode.ISSUE_LENGTH);
         }
 
         issue.updateIssue(requestDto);
@@ -142,7 +175,7 @@ public class IssueService {
         return ResponseEntity.ok("안건 삭제 완료");
     }
 
-    // 미팅 예약하기 안건 삭제
+    // 미팅 바로 시작하기 안건 삭제
     public ResponseEntity deleteIssueNow(Long meetingId,
                                       Long issueId,
                                       UserDetailsImpl userDetails){
