@@ -41,20 +41,7 @@ public class MeetingResponseDto {
         this.meetingTheme = meeting.getMeetingTheme();
         this.meetingDuration = meeting.getMeetingDuration();
         this.issues = meeting.getMeetingIssue();
-        this.meetingCreator =  user.getNickname();
-    }
-
-
-    public MeetingResponseDto(Meeting meeting){
-        this.meetingId = meeting.getId();
-        this.meetingStatus = meeting.getMeetingStatus();
-        this.meetingTitle = meeting.getMeetingTitle();
-        this.meetingDate = meeting.getMeetingDate();
-        this.meetingTime = meeting.getMeetingTime();
-        this.meetingSum = meeting.getMeetingSum();
-        this.meetingTheme = meeting.getMeetingTheme();
-        this.meetingDuration = meeting.getMeetingDuration();
-        this.issues = meeting.getMeetingIssue();
         this.meetingOverTime = meeting.getMeetingOverTime();
+        this.meetingCreator =  user.getNickname();
     }
 }

@@ -152,7 +152,8 @@ public class MeetingService {
 
         List<MeetingResponseDto> meetingResponseDtos = new ArrayList<>();
         for (Meeting meeting : meetingList){
-            MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting);
+            User user = meeting.getMeetingCreator();
+            MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting,user);
             meetingResponseDtos.add(meetingResponseDto);
         }
         return meetingResponseDtos;
