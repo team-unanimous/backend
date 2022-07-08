@@ -72,12 +72,20 @@ public class TeamService {
         if(teamUserList.size()>4){
             throw new CustomException(ErrorCode.EXCESS_TEAM_NUMBER);
         }
-        String teamname1 = requestDto.getTeamname();
-        if (teamRepository.findByTeamname(teamname1).isPresent()){
+        String teamname = requestDto.getTeamname();
+        if (teamRepository.findByTeamname(teamname).isPresent()){
             throw new CustomException(ErrorCode.DUPLICATE_TEAM_NAME);
+        } else if (teamname.length() > 20){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        } else if (teamname == null){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        } else if (teamname.equals("")){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        } else if (teamname.isEmpty()){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
         }
         Team team = Team.builder()
-                .teamname(requestDto.getTeamname())
+                .teamname(teamname)
                 .uuid(UUID.randomUUID().toString())
                 .teamManager(userDetails.getUser().getNickname())
                 .build();
