@@ -72,7 +72,7 @@ public class TeamService {
         if(teamUserList.size()>4){
             throw new CustomException(ErrorCode.EXCESS_TEAM_NUMBER);
         }
-        String teamname = requestDto.getTeamname();
+        String teamname = requestDto.getTeamname().trim();
         if (teamRepository.findByTeamname(teamname).isPresent()){
             throw new CustomException(ErrorCode.DUPLICATE_TEAM_NAME);
         } else if (teamname.length() > 20){

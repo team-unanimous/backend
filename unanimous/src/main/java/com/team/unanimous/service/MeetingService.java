@@ -33,12 +33,12 @@ public class MeetingService {
 
     private final MeetingUserRepository meetingUserRepository;
 
-    // 미팅 생성
+    // 미팅 예약하기 생성
     @Transactional
     public ResponseEntity createMeeting(MeetingRequestDto meetingRequestDto,
                                         UserDetailsImpl userDetails,
                                         Long teamId){
-        String meetingTitle = meetingRequestDto.getMeetingTitle();
+        String meetingTitle = meetingRequestDto.getMeetingTitle().trim();
         if (meetingTitle.length() > 20){
             throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
         } else if (meetingTitle.isEmpty()){
@@ -107,7 +107,16 @@ public class MeetingService {
     public ResponseEntity createMeetingNow(MeetingRequestDto meetingRequestDto,
                                            UserDetailsImpl userDetails,
                                            Long teamId){
-        String meetingTitle = meetingRequestDto.getMeetingTitle();
+        String meetingTitle = meetingRequestDto.getMeetingTitle().trim();
+        if (meetingTitle.length() > 20){
+            throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
+        } else if (meetingTitle.isEmpty()){
+            throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
+        } else if (meetingTitle.equals("")){
+            throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
+        } else if (meetingTitle == null){
+            throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
+        }
         User user = userRepository.findUserById(userDetails.getUser().getId());
         if (user == null){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
