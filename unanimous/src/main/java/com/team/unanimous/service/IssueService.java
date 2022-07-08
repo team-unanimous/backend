@@ -12,6 +12,7 @@ import com.team.unanimous.repository.team.TeamRepository;
 import com.team.unanimous.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.stylesheets.LinkStyle;
 
@@ -34,6 +35,13 @@ public class IssueService {
     public ResponseEntity createIssueYet(Long meetingId,
                                          IssueRequestDto requestDto){
         String issueContent = requestDto.getIssueContent();
+        if (issueContent == null){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.isEmpty()){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.equals("")){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        }
         Meeting meeting = meetingRepository.findMeetingById(meetingId);
         if (meeting == null){
             throw new CustomException(ErrorCode.MEETING_NOT_FOUND);
