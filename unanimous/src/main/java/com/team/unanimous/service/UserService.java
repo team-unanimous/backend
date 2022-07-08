@@ -118,6 +118,7 @@ public class UserService {
         Image image = new Image(s3Uploader.upload(file, "ProfileImage"));
         imageRepository.save(image);
         user.updateImage(image);
+        userRepository.save(user);
         ProfileResponseDto profileResponseDto = new ProfileResponseDto(image);
         return new ResponseEntity(profileResponseDto, HttpStatus.OK);
     }
