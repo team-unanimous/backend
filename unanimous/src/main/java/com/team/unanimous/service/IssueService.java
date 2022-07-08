@@ -41,6 +41,8 @@ public class IssueService {
             throw new CustomException(ErrorCode.EMPTY_ISSUE);
         } else if (issueContent.equals("")){
             throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.length() > 40){
+            throw new CustomException(ErrorCode.ISSUE_LENGTH);
         }
         Meeting meeting = meetingRepository.findMeetingById(meetingId);
         if (meeting == null){
@@ -69,6 +71,8 @@ public class IssueService {
             throw new CustomException(ErrorCode.EMPTY_ISSUE);
         } else if (issueContent.equals("")){
             throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.length() > 40){
+            throw new CustomException(ErrorCode.ISSUE_LENGTH);
         }
         Meeting meeting = meetingRepository.findMeetingById(meetingId);
         if (meeting == null){
@@ -103,6 +107,17 @@ public class IssueService {
             throw new CustomException(ErrorCode.ISSUE_NOT_FOUND);
         }
 
+        String issueContent = requestDto.getIssueContent().trim();
+        if (issueContent == null){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.isEmpty()){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.equals("")){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.length() > 40){
+            throw new CustomException(ErrorCode.ISSUE_LENGTH);
+        }
+
         issue.updateIssue(requestDto);
         issueRepository.save(issue);
         return ResponseEntity.ok("안건 수정 완료");
@@ -124,6 +139,17 @@ public class IssueService {
         Issue issue = issueRepository.findIssueById(issueId);
         if (issue == null){
             throw new CustomException(ErrorCode.ISSUE_NOT_FOUND);
+        }
+
+        String issueContent = requestDto.getIssueContent().trim();
+        if (issueContent == null){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.isEmpty()){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.equals("")){
+            throw new CustomException(ErrorCode.EMPTY_ISSUE);
+        } else if (issueContent.length() > 40){
+            throw new CustomException(ErrorCode.ISSUE_LENGTH);
         }
 
         issue.updateIssue(requestDto);

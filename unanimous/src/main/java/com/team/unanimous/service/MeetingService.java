@@ -244,6 +244,17 @@ public class MeetingService {
             throw new CustomException(ErrorCode.INVALID_AUTHORITY);
         }
 
+        String meetingTitle = requestDto.getMeetingTitle();
+        if (meetingTitle.length() > 20){
+            throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
+        } else if (meetingTitle.isEmpty()){
+            throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
+        } else if (meetingTitle.equals("")){
+            throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
+        } else if (meetingTitle == null){
+            throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
+        }
+
         meeting.updateMeeting(requestDto);
         meetingRepository.save(meeting);
         return ResponseEntity.ok("미팅 정보 수정 완료");

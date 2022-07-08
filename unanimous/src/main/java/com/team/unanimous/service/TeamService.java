@@ -39,8 +39,9 @@ public class TeamService {
     // Unanimous 참여하기
     @Transactional
     public ResponseEntity joinUnanimous(UserDetailsImpl userDetails){
-        String teamname = "Unanimous";
-        Team team = teamRepository.findTeamByTeamname(teamname);
+//        String teamname = "Unanimous";
+//        Team team = teamRepository.findTeamByTeamname(teamname);
+        Team team = teamRepository.findTeamById(1L);
         if (team == null){
             throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
         }
@@ -73,9 +74,7 @@ public class TeamService {
             throw new CustomException(ErrorCode.EXCESS_TEAM_NUMBER);
         }
         String teamname = requestDto.getTeamname().trim();
-        if (teamRepository.findByTeamname(teamname).isPresent()){
-            throw new CustomException(ErrorCode.DUPLICATE_TEAM_NAME);
-        } else if (teamname.length() > 20){
+        if (teamname.length() > 8){
             throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
         } else if (teamname == null){
             throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
@@ -175,7 +174,19 @@ public class TeamService {
             throw new CustomException(ErrorCode.TEAM_MANAGER_CONFLICT);
         }
 
+        String teamname = requestDto.getTeamname().trim();
+        if (teamname.length() > 8){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        } else if (teamname == null){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        } else if (teamname.equals("")){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        } else if (teamname.isEmpty()){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        }
+
         team.updateTeam(requestDto);
+        teamRepository.save(team);
         return ResponseEntity.ok("팀 프로필 수정 완료");
     }
 
