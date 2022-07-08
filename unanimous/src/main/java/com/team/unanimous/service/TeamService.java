@@ -45,8 +45,9 @@ public class TeamService {
     // Unanimous 참여하기
     @Transactional
     public ResponseEntity joinUnanimous(UserDetailsImpl userDetails){
-        String teamname = "Unanimous";
-        Team team = teamRepository.findTeamByTeamname(teamname);
+//        String teamname = "Unanimous";
+//        Team team = teamRepository.findTeamByTeamname(teamname);
+        Team team = teamRepository.findTeamById(1L);
         if (team == null){
             throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
         }
@@ -78,12 +79,18 @@ public class TeamService {
         if(teamUserList.size()>4){
             throw new CustomException(ErrorCode.EXCESS_TEAM_NUMBER);
         }
-        String teamname1 = requestDto.getTeamname();
-        if (teamRepository.findByTeamname(teamname1).isPresent()){
-            throw new CustomException(ErrorCode.DUPLICATE_TEAM_NAME);
+        String teamname = requestDto.getTeamname().trim();
+        if (teamname.length() > 8){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        } else if (teamname == null){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        } else if (teamname.equals("")){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        } else if (teamname.isEmpty()){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
         }
         Team team = Team.builder()
-                .teamname(requestDto.getTeamname())
+                .teamname(teamname)
                 .uuid(UUID.randomUUID().toString())
                 .teamManager(userDetails.getUser().getNickname())
                 .build();
@@ -175,8 +182,20 @@ public class TeamService {
 //        TeamImage teamImage = new TeamImage(s3Uploader.upload(multipartFile, "teamImage"));
 //        teamImageRepository.save(teamImage);
 
+        String teamname = requestDto.getTeamname().trim();
+        if (teamname.length() > 8){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        } else if (teamname == null){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        } else if (teamname.equals("")){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        } else if (teamname.isEmpty()){
+            throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
+        }
+
         team.updateTeam(requestDto);
 //        team.updateImage(teamImage);
+        teamRepository.save(team);
         return ResponseEntity.ok("팀 프로필 수정 완료");
     }
 

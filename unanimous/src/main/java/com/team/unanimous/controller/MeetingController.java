@@ -17,7 +17,7 @@ public class MeetingController {
 
     private final MeetingService meetingService;
 
-    // 미팅 생성
+    // 미팅 예약하기 생성
     @PostMapping("/api/teams/{teamId}/meetings")
     public ResponseEntity createMeeting(@RequestBody MeetingRequestDto meetingRequestDto,
                                         @PathVariable Long teamId,

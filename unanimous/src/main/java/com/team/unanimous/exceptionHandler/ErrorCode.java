@@ -11,6 +11,7 @@ public enum ErrorCode {
 
     EMPTY_NICKNAME(HttpStatus.BAD_REQUEST,"닉네임을 입력해주세요."),
     EMPTY_USERNAME(HttpStatus.BAD_REQUEST,"이메일을 입력해주세요."),
+    EMPTY_ISSUE(HttpStatus.BAD_REQUEST,"안건을 입력해주세요."),
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "만료되었거나 유효하지 않은 토큰입니다."),
     INVALID_LOGIN_ATTEMPT(HttpStatus.UNAUTHORIZED, "로그인에 실패하였습니다(소셜로그인 에러)"),
@@ -37,6 +38,9 @@ public enum ErrorCode {
     PASSWORD_LEGNTH(HttpStatus.CONFLICT, "비밀번호는 6자 이상 12자 이하여야 합니다"),
     PASSWORD_WRONG(HttpStatus.CONFLICT, "비밀번호는 영문, 숫자, 특수문자를 포함해야합니다"),
     PASSWORD_CHECK(HttpStatus.CONFLICT, "비밀번호가 일치하지 않습니다."),
+    TEAM_NAME_LENGTH(HttpStatus.CONFLICT,"팀명은 20자 이하여야 합니다"),
+    MEETING_NAME_LENGTH(HttpStatus.CONFLICT,"회의 이름은 20자 이하여야 합니다"),
+    ISSUE_LENGTH(HttpStatus.CONFLICT,"안건 내용은 최대 40자입니다"),
     MEETING_HAS_DONE(HttpStatus.CONFLICT,"미팅이 이미 진행중이거나 완료되었습니다");
 
 
