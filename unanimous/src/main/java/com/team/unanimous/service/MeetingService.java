@@ -39,6 +39,15 @@ public class MeetingService {
                                         UserDetailsImpl userDetails,
                                         Long teamId){
         String meetingTitle = meetingRequestDto.getMeetingTitle();
+        if (meetingTitle.length() > 20){
+            throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
+        } else if (meetingTitle.isEmpty()){
+            throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
+        } else if (meetingTitle.equals("")){
+            throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
+        } else if (meetingTitle == null){
+            throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
+        }
         String meetingDate = meetingRequestDto.getMeetingDate();
         String meetingTime = meetingRequestDto.getMeetingTime();
         String meetingDuration = meetingRequestDto.getMeetingDuration();
@@ -142,13 +151,19 @@ public class MeetingService {
 
     // 예약 중인 미팅 목록
     public List<MeetingResponseDto> getYetMeetings(Long teamId){
-        List<Meeting> meetingList = meetingRepository.findAllByTeamId(teamId);
-
+        List<Meeting> meetingList = meetingRepository.findAllByOrderByModifiedAtDesc();
+        List<Meeting> meetingList1 = new ArrayList<>();
+        for (Meeting meeting : meetingList){
+            if (meeting.getTeam().getId().equals(teamId)){
+                meetingList1.add(meeting);
+            }
+        }
 
         List<MeetingResponseDto> meetingResponseDtos = new ArrayList<>();
-        for (Meeting meeting : meetingList){
+        for (Meeting meeting : meetingList1){
             if (meeting.getMeetingStatus().equals(Meeting.Status.YET)) {
-                MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting);
+                User user = meeting.getMeetingCreator();
+                MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting,user);
                 meetingResponseDtos.add(meetingResponseDto);
             }
         }
@@ -157,13 +172,20 @@ public class MeetingService {
 
     // 진행중인 미팅 목록
     public List<MeetingResponseDto> getNowMeetings(Long teamId){
-        List<Meeting> meetingList = meetingRepository.findAllByTeamId(teamId);
+        List<Meeting> meetingList = meetingRepository.findAllByOrderByModifiedAtDesc();
+        List<Meeting> meetingList1 = new ArrayList<>();
+        for (Meeting meeting : meetingList){
+            if (meeting.getTeam().getId().equals(teamId)){
+                meetingList1.add(meeting);
+            }
+        }
 
 
         List<MeetingResponseDto> meetingResponseDtos = new ArrayList<>();
-        for (Meeting meeting : meetingList){
+        for (Meeting meeting : meetingList1){
             if (meeting.getMeetingStatus().equals(Meeting.Status.NOW)) {
-                MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting);
+                User user = meeting.getMeetingCreator();
+                MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting,user);
                 meetingResponseDtos.add(meetingResponseDto);
             }
         }
@@ -172,13 +194,19 @@ public class MeetingService {
 
     // 이전 미팅 목록
     public List<MeetingResponseDto> getDoneMeetings(Long teamId){
-        List<Meeting> meetingList = meetingRepository.findAllByTeamId(teamId);
-
+        List<Meeting> meetingList = meetingRepository.findAllByOrderByModifiedAtDesc();
+        List<Meeting> meetingList1 = new ArrayList<>();
+        for (Meeting meeting : meetingList){
+            if (meeting.getTeam().getId().equals(teamId)){
+                meetingList1.add(meeting);
+            }
+        }
 
         List<MeetingResponseDto> meetingResponseDtos = new ArrayList<>();
-        for (Meeting meeting : meetingList){
+        for (Meeting meeting : meetingList1){
             if (meeting.getMeetingStatus().equals(Meeting.Status.DONE)) {
-                MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting);
+                User user = meeting.getMeetingCreator();
+                MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting,user);
                 meetingResponseDtos.add(meetingResponseDto);
             }
         }
