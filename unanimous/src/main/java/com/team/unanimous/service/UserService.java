@@ -114,10 +114,10 @@ public class UserService {
     //s3이미지 업로드
     public ResponseEntity signupImage(MultipartFile file, Long userId) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
-
         Image image = new Image(s3Uploader.upload(file, "ProfileImage"));
         imageRepository.save(image);
         user.updateImage(image);
+        userRepository.save(user);
         ProfileResponseDto profileResponseDto = new ProfileResponseDto(image);
         return new ResponseEntity(profileResponseDto, HttpStatus.OK);
     }

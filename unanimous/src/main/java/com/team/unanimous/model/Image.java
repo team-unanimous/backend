@@ -10,11 +10,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Entity
-public class Image {
+public class Image{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long iamgeId;
+    private Long imageId;
 
     @Column(nullable = false)
     private String filename;
