@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.team.unanimous.dto.requestDto.EmailRequestDto;
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.PasswordRequestDto;
+import com.team.unanimous.dto.requestDto.SignupRequestDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
 import com.team.unanimous.service.EmailService;
@@ -36,11 +37,16 @@ public class UserController {
         return userService.email(emailRequestDto);
     }
 
-    //비밀번호 수정
-    @PatchMapping("/api/users/password/{userId}")
-    public ResponseEntity password(@PathVariable Long userId, @RequestBody PasswordRequestDto passwordRequestDto) {
-        return userService.password(userId, passwordRequestDto);
+    @PostMapping("/api/users/signup")
+    public ResponseEntity signup(@RequestBody SignupRequestDto signupRequestDto) {
+        return userService.signup(signupRequestDto);
     }
+
+//    //비밀번호 수정
+//    @PatchMapping("/api/users/password/{userId}")
+//    public ResponseEntity password(@PathVariable Long userId, @RequestBody PasswordRequestDto passwordRequestDto) {
+//        return userService.password(userId, passwordRequestDto);
+//    }
 
     //닉네임중복체크
     @PostMapping("/api/users/nickname")

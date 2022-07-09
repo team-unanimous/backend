@@ -5,24 +5,28 @@ import com.team.unanimous.dto.requestDto.BanRequestDto;
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.TeamInviteRequestDto;
 import com.team.unanimous.dto.requestDto.TeamRequestDto;
-import com.team.unanimous.dto.responseDto.NicknameResponseDto;
-import com.team.unanimous.dto.responseDto.TeamResponseDto;
-import com.team.unanimous.dto.responseDto.TeamUserMainResponseDto;
-import com.team.unanimous.dto.responseDto.TeamUserResponseDto;
+import com.team.unanimous.dto.responseDto.*;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
+import com.team.unanimous.model.Image;
+import com.team.unanimous.model.TeamImage;
 import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.team.TeamUser;
 import com.team.unanimous.model.user.User;
+import com.team.unanimous.repository.TeamImageRepository;
 import com.team.unanimous.repository.team.TeamRepository;
 import com.team.unanimous.repository.team.TeamUserRepository;
 import com.team.unanimous.repository.user.UserRepository;
 import com.team.unanimous.security.UserDetailsImpl;
+import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +39,8 @@ public class TeamService {
     private final UserRepository userRepository;
 
     private final TeamUserRepository teamUserRepository;
+    private final S3Uploader s3Uploader;
+    private final TeamImageRepository teamImageRepository;
 
     // Unanimous 참여하기
     @Transactional
@@ -165,7 +171,7 @@ public class TeamService {
 
     // 팀 프로필 사진, 팀 네임
     @Transactional
-    public ResponseEntity updateTeam(Long teamId, TeamRequestDto requestDto, UserDetailsImpl userDetails){
+    public ResponseEntity updateTeam(MultipartFile multipartFile, Long teamId, TeamRequestDto requestDto, UserDetailsImpl userDetails)throws IOException {
         Team team = teamRepository.findTeamById(teamId);
         if (team == null){
             throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
@@ -173,6 +179,8 @@ public class TeamService {
         if (!(userDetails.getUser().getNickname().equals(team.getTeamManager()))){
             throw new CustomException(ErrorCode.TEAM_MANAGER_CONFLICT);
         }
+//        TeamImage teamImage = new TeamImage(s3Uploader.upload(multipartFile, "teamImage"));
+//        teamImageRepository.save(teamImage);
 
         String teamname = requestDto.getTeamname().trim();
         if (teamname.length() > 8){
@@ -186,6 +194,7 @@ public class TeamService {
         }
 
         team.updateTeam(requestDto);
+//        team.updateImage(teamImage);
         teamRepository.save(team);
         return ResponseEntity.ok("팀 프로필 수정 완료");
     }

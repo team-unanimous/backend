@@ -2,6 +2,8 @@ package com.team.unanimous.model.team;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.unanimous.dto.requestDto.TeamRequestDto;
+import com.team.unanimous.model.Image;
+import com.team.unanimous.model.TeamImage;
 import com.team.unanimous.model.meeting.Meeting;
 import lombok.*;
 
@@ -29,6 +31,10 @@ public class Team {
     @Column(nullable = false)
     private String teamManager;
 
+    @OneToOne
+    @JoinColumn(name = "teamImageId")
+    private TeamImage teamImage;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "team")
     private List<TeamUser> userList;
@@ -38,7 +44,11 @@ public class Team {
     private List<Meeting> meetingList;
 
     public void updateTeam(TeamRequestDto requestDto){
+
         this.teamname = requestDto.getTeamname();
     }
 
+    public void updateImage(TeamImage teamImage){
+        this.teamImage = teamImage;
+    }
 }
