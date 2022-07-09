@@ -1,11 +1,13 @@
 package com.team.unanimous.service;
 
+import com.team.unanimous.UnanimousApplication;
 import com.team.unanimous.dto.requestDto.EmailRequestDto;
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.PasswordRequestDto;
 import com.team.unanimous.dto.requestDto.SignupRequestDto;
 import com.team.unanimous.dto.responseDto.ProfileResponseDto;
 import com.team.unanimous.dto.responseDto.SignupResponseDto;
+import com.team.unanimous.dto.responseDto.UsernameResponseDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
 import com.team.unanimous.model.Image;
@@ -36,6 +38,19 @@ public class UserService {
     private final ImageRepository imageRepository;
     private final S3Uploader s3Uploader;
 
+    public ResponseEntity email(EmailRequestDto emailRequestDto){
+        String username = emailRequestDto.getUsername();
+        String usernamePattern = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
+        if(username.equals("")) {
+            throw new CustomException(ErrorCode.EMPTY_USERNAME);
+        } else if(!Pattern.matches(usernamePattern, username)) {
+            throw new CustomException(ErrorCode.USERNAME_WRONG);
+        } else if(userRepository.findByUsername(username).isPresent()){
+            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
+        }
+        UsernameResponseDto usernameResponseDto = new UsernameResponseDto(username,"아이디 저장완료");
+        return new ResponseEntity(usernameResponseDto, HttpStatus.OK);
+    }
     // 이메일 인증 및 회원가입
     public ResponseEntity signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
@@ -43,17 +58,10 @@ public class UserService {
         String password = signupRequestDto.getPassword();
         String passwordCheck = signupRequestDto.getPasswordCheck();
         String nickname = "게스트";
-        int count = 0;
+
         boolean isGoogle = false;
-        String usernamePattern = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
         // 아아디 정규식 맞지않는 경우 오류메세지를 전달해준다.
-        if(username.equals("")) {
-            throw new CustomException(ErrorCode.EMPTY_USERNAME);
-        } else if(!Pattern.matches(usernamePattern, username)) {
-            throw new CustomException(ErrorCode.USERNAME_WRONG);
-        } else if(userRepository.findByUsername(username).isPresent()){
-            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
-        } else if(signupRequestDto.getPassword().equals("")){
+        if(signupRequestDto.getPassword().equals("")){
             throw new CustomException(ErrorCode.EMPTY_PASSWORD);
         }else if( 6 > password.length() || 12 < password.length()){
             throw new CustomException(ErrorCode.PASSWORD_LEGNTH);
@@ -63,12 +71,15 @@ public class UserService {
             throw new CustomException(ErrorCode.PASSWORD_CHECK);
         }
 
+
         password = passwordEncoder.encode(password);
-//        count = count +1;
-//        nickname = nickname + count;
         //user 객체에 requestDto에서 받아온값을 넣는다.
-        User user = new User(signupRequestDto.getUsername(), password, isGoogle);
+        User user = new User(username, password, isGoogle, nickname);
+
         //user 객체를 저장한다.
+        userRepository.save(user);
+
+        user.setNickname(user.getNickname()+ " " + user.getId());
         userRepository.save(user);
         SignupResponseDto signupResponseDto = new SignupResponseDto(user,"회원가입 성공");
         return new ResponseEntity(signupResponseDto, HttpStatus.OK);

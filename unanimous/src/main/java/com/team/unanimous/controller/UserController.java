@@ -33,7 +33,12 @@ public class UserController {
 
     //이메일 인증 및 회원가입
     @PostMapping("/api/users/emails")
-    public ResponseEntity email(@RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseEntity email(@RequestBody EmailRequestDto emailRequestDto) {
+        return userService.email(emailRequestDto);
+    }
+
+    @PostMapping("/api/users/signup")
+    public ResponseEntity signup(@RequestBody SignupRequestDto signupRequestDto) {
         return userService.signup(signupRequestDto);
     }
 

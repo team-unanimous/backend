@@ -50,15 +50,16 @@ public class User {
     @JoinColumn(name = "ImageId")
     private Image image;
 
+    @Column
+    private int count;
 
 
-    public User(String username, String password, boolean isGoogle) {
+    public User(String username, String password, boolean isGoogle, String nickname) {
         this.username = username;
         this.password = password;
         this.isGoogle = isGoogle;
-//        this.nickname = nickname;
+        this.nickname = nickname;
     }
-
 //    public User(String password) {
 //        this.password = password;
 //    }

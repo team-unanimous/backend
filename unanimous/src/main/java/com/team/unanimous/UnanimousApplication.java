@@ -9,7 +9,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 public class UnanimousApplication {
 
     public static void main(String[] args) {
+
         SpringApplication.run(UnanimousApplication.class, args);
+
+
     }
 
 }
