@@ -1,6 +1,7 @@
 package com.team.unanimous.service;
 
 import com.team.unanimous.UnanimousApplication;
+import com.team.unanimous.dto.ImageDto;
 import com.team.unanimous.dto.requestDto.EmailRequestDto;
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.PasswordRequestDto;
@@ -141,12 +142,27 @@ public class UserService {
 
     //s3이미지 업로드
     public ResponseEntity signupImage(MultipartFile file, Long userId) throws IOException {
-        User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
-        Image image = new Image(s3Uploader.upload(file, "ProfileImage"));
-        imageRepository.save(image);
-        user.updateImage(image);
-        userRepository.save(user);
-        ProfileResponseDto profileResponseDto = new ProfileResponseDto(image);
-        return new ResponseEntity(profileResponseDto, HttpStatus.OK);
+        String defaultimage;
+        String defaultfilename;
+        if(file.isEmpty()){
+            User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
+            defaultfilename = "snape.jpg";
+            defaultimage = "https://s3unanimous.s3.ap-northeast-2.amazonaws.com/snape.jpg";
+            ImageDto imageDto = new ImageDto(defaultimage, defaultfilename);
+            Image image = new Image(imageDto);
+            imageRepository.save(image);
+            user.updateImage(image);
+            userRepository.save(user);
+            ProfileResponseDto profileResponseDto = new ProfileResponseDto(image);
+            return new ResponseEntity(profileResponseDto, HttpStatus.OK);
+        }else {
+            User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
+            Image image = new Image(s3Uploader.upload(file, "ProfileImage"));
+            imageRepository.save(image);
+            user.updateImage(image);
+            userRepository.save(user);
+            ProfileResponseDto profileResponseDto = new ProfileResponseDto(image);
+            return new ResponseEntity(profileResponseDto, HttpStatus.OK);
+        }
     }
 }

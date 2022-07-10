@@ -11,4 +11,7 @@ public class ProfileResponseDto {
 
         this.userImageUrl=image.getImageUrl();
     }
+    public ProfileResponseDto(String userImageUrl){
+        this.userImageUrl = userImageUrl;
+    }
 }
