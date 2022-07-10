@@ -16,7 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.annotation.MultipartConfig;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -75,10 +78,11 @@ public class TeamController {
 
     // 팀 프로필 수정
     @PatchMapping("/api/teams/{teamId}")
-    public ResponseEntity updateTeam(@PathVariable Long teamId,
+    public ResponseEntity updateTeam(@RequestParam("teamImage") MultipartFile multipartFile,
+                                     @PathVariable Long teamId,
                                      @RequestBody TeamRequestDto requestDto,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return teamService.updateTeam(teamId,requestDto,userDetails);
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails)throws IOException {
+        return teamService.updateTeam(multipartFile,teamId,requestDto,userDetails);
     }
 
     // 팀원 강퇴

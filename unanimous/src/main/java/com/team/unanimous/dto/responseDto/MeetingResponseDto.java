@@ -40,6 +40,7 @@ public class MeetingResponseDto {
         this.meetingSum = meeting.getMeetingSum();
         this.meetingTheme = meeting.getMeetingTheme();
         this.meetingDuration = meeting.getMeetingDuration();
+        this.meetingOverTime = meeting.getMeetingOverTime();
         this.issues = meeting.getMeetingIssue();
         this.meetingOverTime = meeting.getMeetingOverTime();
         this.meetingCreator =  user.getNickname();
