@@ -70,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.headers().frameOptions().sameOrigin();
 
         /*
          * 1.
@@ -138,6 +139,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         skipPathList.add("POST,/api/users/signup/profile/**");
         skipPathList.add("GET,/login/google/callback/**");
         skipPathList.add("POST,/api/users/signup/**");
+        // 소켓 통신
+        skipPathList.add("GET,/ws-stomp/**/**");
+        skipPathList.add("GET,/ws-stomp/**");
         FilterSkipMatcher matcher = new FilterSkipMatcher(
                 skipPathList,
                 "/**"

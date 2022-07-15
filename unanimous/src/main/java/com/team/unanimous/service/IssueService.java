@@ -1,20 +1,21 @@
 package com.team.unanimous.service;
 
 import com.team.unanimous.dto.requestDto.IssueRequestDto;
+import com.team.unanimous.dto.requestDto.ResultRequestDto;
 import com.team.unanimous.dto.responseDto.IssueResponseDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
 import com.team.unanimous.model.meeting.Issue;
 import com.team.unanimous.model.meeting.Meeting;
+import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.issue.IssueRepository;
 import com.team.unanimous.repository.meeting.MeetingRepository;
 import com.team.unanimous.repository.team.TeamRepository;
+import com.team.unanimous.repository.user.UserRepository;
 import com.team.unanimous.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ public class IssueService {
     private final MeetingRepository meetingRepository;
 
     private final TeamRepository teamRepository;
+
+    private final UserRepository userRepository;
 
     // 미팅 예약하기 안건 등록
     @Transactional
@@ -205,5 +208,24 @@ public class IssueService {
             issueResponseDtos.add(issueResponseDto);
         }
         return issueResponseDtos;
+    }
+
+    // 안건별 회의 결과 작성
+    public ResponseEntity writeResult(Long meetingId,
+                                      Long issueId,
+                                      ResultRequestDto requestDto,
+                                      UserDetailsImpl userDetails){
+        Meeting meeting = meetingRepository.findMeetingById(meetingId);
+
+        User user = userRepository.findUserById(userDetails.getUser().getId());
+        if (!(meeting.getMeetingCreator().equals(user.getNickname()))){
+            throw new CustomException(ErrorCode.INVALID_AUTHORITY);
+        }
+
+        Issue issue = issueRepository.findIssueById(issueId);
+
+        issue.writeResult(requestDto);
+        issueRepository.save(issue);
+        return ResponseEntity.ok("결과 작성 완료");
     }
 }

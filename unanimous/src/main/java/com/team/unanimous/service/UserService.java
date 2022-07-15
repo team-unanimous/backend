@@ -14,6 +14,7 @@ import com.team.unanimous.model.Image;
 import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.ImageRepository;
 import com.team.unanimous.repository.user.UserRepository;
+//import com.team.unanimous.service.S3.S3Uploader;
 import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -139,7 +140,7 @@ public class UserService {
 //        user.update(nickname);
 //        userRepository.save(user);
 
-    //s3이미지 업로드
+    // s3이미지 업로드
     public ResponseEntity signupImage(MultipartFile file, Long userId) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
         Image image = new Image(s3Uploader.upload(file, "ProfileImage"));
