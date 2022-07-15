@@ -55,6 +55,7 @@ public class UserService {
     // 이메일 인증 및 회원가입
     public ResponseEntity signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
+        String usernamePattern = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
         String pattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^*+=-]).{6,12}$";
         String password = signupRequestDto.getPassword();
         String passwordCheck = signupRequestDto.getPasswordCheck();
@@ -63,7 +64,13 @@ public class UserService {
 
         boolean isGoogle = false;
         // 아아디 정규식 맞지않는 경우 오류메세지를 전달해준다.
-        if(signupRequestDto.getPassword().equals("")){
+        if(username.equals("")) {
+            throw new CustomException(ErrorCode.EMPTY_USERNAME);
+        } else if(!Pattern.matches(usernamePattern, username)) {
+            throw new CustomException(ErrorCode.USERNAME_WRONG);
+        } else if(userRepository.findByUsername(username).isPresent()){
+            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
+        }else if(signupRequestDto.getPassword().equals("")){
             throw new CustomException(ErrorCode.EMPTY_PASSWORD);
         }else if( 6 > password.length() || 12 < password.length()){
             throw new CustomException(ErrorCode.PASSWORD_LEGNTH);
