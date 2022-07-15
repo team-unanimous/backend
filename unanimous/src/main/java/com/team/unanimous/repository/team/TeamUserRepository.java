@@ -10,18 +10,11 @@ import java.util.Optional;
 
 public interface TeamUserRepository extends JpaRepository<TeamUser,Long> {
 
-    List<TeamUser> findByUserIdAndTeamId(Long userId,Long teamId);
-
     List<TeamUser> findAllByUser(User user);
-
-    TeamUser findByUser(User user);
-
 
     List<TeamUser> findAllByTeam(Team team);
 
     TeamUser findByTeam(Team team);
-
-    List<TeamUser> findAllByTeamId(Long teamId);
 
     TeamUser findAllByTeamIdAndUserId(Long teamId, Long userId);
 

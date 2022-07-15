@@ -39,7 +39,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     // 인증번호 유효시간 동안 저장
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-
     // swagger 설정
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
@@ -56,7 +55,19 @@ dependencies {
 
     //S3 이미지 업로드를 위한 코드
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+
+    //redis
+    implementation 'it.ozimov:embedded-redis:0.7.2'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    //websocket,sockjs,stomp
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:sockjs-client:1.1.2'
+    implementation 'org.webjars:stomp-websocket:2.3.3-1'
+
 }
+
 
 tasks.named('test') {
     useJUnitPlatform()

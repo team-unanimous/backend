@@ -1,6 +1,7 @@
 package com.team.unanimous.controller;
 
 import com.team.unanimous.dto.requestDto.IssueRequestDto;
+import com.team.unanimous.dto.requestDto.ResultRequestDto;
 import com.team.unanimous.dto.responseDto.IssueResponseDto;
 import com.team.unanimous.security.UserDetailsImpl;
 import com.team.unanimous.service.IssueService;
@@ -68,5 +69,14 @@ public class IssueController {
     @GetMapping("/api/meetings/{meetingId}/issues")
     public List<IssueResponseDto> getIssues(@PathVariable Long meetingId){
         return issueService.getIssues(meetingId);
+    }
+
+    // 안건별 회의 결과 작성
+    @PatchMapping("/api/meetings/{meetingId}/issues/{issueId}/result")
+    public ResponseEntity writeResult(@PathVariable Long meetingId,
+                                      @PathVariable Long issueId,
+                                      @RequestBody ResultRequestDto requestDto,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return issueService.writeResult(meetingId, issueId, requestDto, userDetails);
     }
 }

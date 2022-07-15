@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface IssueRepository extends JpaRepository<Issue,Long> {
-    List<Issue> findAllByMeeting(Meeting meeting);
 
     Issue findIssueById(Long issueId);
 

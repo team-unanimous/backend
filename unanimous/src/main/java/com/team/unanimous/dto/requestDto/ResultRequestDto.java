@@ -2,9 +2,8 @@ package com.team.unanimous.dto.requestDto;
 
 import lombok.Getter;
 
-
 @Getter
-public class EmailRequestDto {
+public class ResultRequestDto {
 
-    private String username;
+    private String issueResult;
 }

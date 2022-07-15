@@ -18,7 +18,7 @@ import com.team.unanimous.repository.team.TeamRepository;
 import com.team.unanimous.repository.team.TeamUserRepository;
 import com.team.unanimous.repository.user.UserRepository;
 import com.team.unanimous.security.UserDetailsImpl;
-import com.team.unanimous.service.S3.S3Uploader;
+//import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +39,8 @@ public class TeamService {
     private final UserRepository userRepository;
 
     private final TeamUserRepository teamUserRepository;
-    private final S3Uploader s3Uploader;
-    private final TeamImageRepository teamImageRepository;
+//    private final S3Uploader s3Uploader;
+
 
     // Unanimous 참여하기
     @Transactional

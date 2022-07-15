@@ -4,6 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+!**/src/main/java/com/team/unanimous/security/filter/MailConfig
 
 ### STS ###
 .apt_generated
@@ -37,4 +38,3 @@ out/
 .vscode/
 **/application-google.properties
 **/application-email.properties
-**/application.yaml

@@ -70,6 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.headers().frameOptions().sameOrigin();
 
         /*
          * 1.
@@ -124,20 +125,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         skipPathList.add("POST,/h2-console/**");
         // 회원 관리 API 허용
         skipPathList.add("POST,/api/users/signup");
-        skipPathList.add("POST,/api/users/login");
-//        skipPathList.add("GET,/");
-//        skipPathList.add("GET,/api/users/**");
-//        skipPathList.add("OPTIONS,/");
         //닉네임 중복 체크
         skipPathList.add("POST,/api/users/nickname/**");
         skipPathList.add("PATCH,/api/users/nickname/**");
         //이메일 중복체크 및 인증메일 발송
         skipPathList.add("POST,/api/users/emails");
         skipPathList.add("PATCH,/api/users/password/**");
-        skipPathList.add("GET,/user/kakao/callback");
-        skipPathList.add("POST,/api/users/signup/profile/**");
-        skipPathList.add("GET,/login/google/callback/**");
         skipPathList.add("POST,/api/users/signup/**");
+        // 소켓 통신
+        skipPathList.add("GET,/ws-stomp/**/**");
+        skipPathList.add("GET,/ws-stomp/**");
         FilterSkipMatcher matcher = new FilterSkipMatcher(
                 skipPathList,
                 "/**"

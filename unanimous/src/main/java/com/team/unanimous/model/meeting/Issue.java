@@ -2,6 +2,7 @@ package com.team.unanimous.model.meeting;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.team.unanimous.dto.requestDto.IssueRequestDto;
+import com.team.unanimous.dto.requestDto.ResultRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -24,11 +25,15 @@ public class Issue {
     private String issueResult;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
 
     public void updateIssue(IssueRequestDto requestDto){
         this.issueContent = requestDto.getIssueContent();
+    }
+
+    public void writeResult(ResultRequestDto requestDto){
+        this.issueResult = requestDto.getIssueResult();
     }
 }

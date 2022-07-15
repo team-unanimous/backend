@@ -1,11 +1,12 @@
 package com.team.unanimous.service;
 
-import com.team.unanimous.UnanimousApplication;
+
 import com.team.unanimous.dto.ImageDto;
 import com.team.unanimous.dto.requestDto.EmailRequestDto;
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.PasswordRequestDto;
 import com.team.unanimous.dto.requestDto.SignupRequestDto;
+import com.team.unanimous.dto.requestDto.*;
 import com.team.unanimous.dto.responseDto.ProfileResponseDto;
 import com.team.unanimous.dto.responseDto.SignupResponseDto;
 import com.team.unanimous.dto.responseDto.UsernameResponseDto;
@@ -15,6 +16,7 @@ import com.team.unanimous.model.Image;
 import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.ImageRepository;
 import com.team.unanimous.repository.user.UserRepository;
+import com.team.unanimous.security.UserDetailsImpl;
 import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,14 +33,13 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final String AUTH_HEADER = "Authorization";
-
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
     private final ImageRepository imageRepository;
     private final S3Uploader s3Uploader;
 
+    //이메일 코드인증(수정필요)
     public ResponseEntity email(EmailRequestDto emailRequestDto){
         String username = emailRequestDto.getUsername();
         String usernamePattern = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
@@ -49,10 +50,12 @@ public class UserService {
         } else if(userRepository.findByUsername(username).isPresent()){
             throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
+
         UsernameResponseDto usernameResponseDto = new UsernameResponseDto(username,"아이디 저장완료");
         return new ResponseEntity(usernameResponseDto, HttpStatus.OK);
     }
-    // 이메일 인증 및 회원가입
+
+    // 비밀번호 생성 및 유저네임 유효성검사 회원가입
     public ResponseEntity signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
         String usernamePattern = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
@@ -60,7 +63,7 @@ public class UserService {
         String password = signupRequestDto.getPassword();
         String passwordCheck = signupRequestDto.getPasswordCheck();
         String nickname = "게스트";
-        String defaultImage = "https://s3unanimous.s3.ap-northeast-2.amazonaws.com/snape.jpg";
+        String defaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/snape.jpg";
 
         boolean isGoogle = false;
         // 아아디 정규식 맞지않는 경우 오류메세지를 전달해준다.
@@ -79,12 +82,9 @@ public class UserService {
         } else if(!signupRequestDto.getPassword().equals(passwordCheck)){
             throw new CustomException(ErrorCode.PASSWORD_CHECK);
         }
-
-
         password = passwordEncoder.encode(password);
         //user 객체에 requestDto에서 받아온값을 넣는다.
         User user = new User(username, password, isGoogle, nickname, defaultImage);
-
         //user 객체를 저장한다.
         userRepository.save(user);
 
@@ -94,31 +94,7 @@ public class UserService {
         return new ResponseEntity(signupResponseDto, HttpStatus.OK);
     }
 
-    //비밀번호 생성
-//    public ResponseEntity password(Long userId, PasswordRequestDto passwordRequestDto) {
-//        String pattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^*+=-]).{6,12}$";
-//        String password = passwordRequestDto.getPassword();
-//        String passwordCheck = passwordRequestDto.getPasswordCheck();
-//
-//        // 비밀번호 정규식에 맞지 않는 경우 오류메세지를 전달해준다.
-//        if(passwordRequestDto.getPassword().equals("")){
-//            throw new CustomException(ErrorCode.EMPTY_PASSWORD);
-//        }else if( 6 > password.length() || 12 < password.length()){
-//            throw new CustomException(ErrorCode.PASSWORD_LEGNTH);
-//        }else if(!Pattern.matches(pattern,password)){
-//            throw new CustomException(ErrorCode.PASSWORD_WRONG);
-//        } else if(!passwordRequestDto.getPassword().equals(passwordCheck)){
-//            throw new CustomException(ErrorCode.PASSWORD_CHECK);
-//        }
-//        password = passwordEncoder.encode(password);
-//        User user1 = userRepository.findById(userId).orElseThrow(
-//                () -> new CustomException(ErrorCode.NOT_FOUND_USER));
-//        user1.setPassword(password);
-//            userRepository.save(user1);
-//            return new ResponseEntity("비밀번호 저장완료", HttpStatus.OK);
-//        }
-
-    // 닉네임 중복 체크
+    // 마이페이지, 회원가입 닉네임 중복 체크
     public ResponseEntity nicknameCheck(NicknameRequestDto nicknameRequestDto) {
         String nickname = nicknameRequestDto.getNickname();
         if(nickname.equals("")) {
@@ -132,7 +108,7 @@ public class UserService {
     }
 
 
-    // 닉네임 수정
+    // 마이페이지, 회원가입 닉네임 수정
     public ResponseEntity nickname(Long userId, NicknameRequestDto nicknameRequestDto) {
         String nickname = nicknameRequestDto.getNickname();
         User user1 = userRepository.findById(userId).orElseThrow(
@@ -142,20 +118,14 @@ public class UserService {
         return new ResponseEntity("닉네임 저장완료", HttpStatus.OK);
     }
 
-// 닉네임 저장
-//    User user = userRepository.findById(userId).orElseThrow(
-//            () -> new CustomException(ErrorCode.NOT_FOUND_USER));
-//        user.update(nickname);
-//        userRepository.save(user);
-
-    //s3이미지 업로드
+    // 마이페이지 s3이미지 업로드
     public ResponseEntity signupImage(MultipartFile file, Long userId) throws IOException {
         String defaultImage;
         String defaultFileName;
         if(file.isEmpty()){
             User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
             defaultFileName = "snape.jpg";
-            defaultImage = "https://s3unanimous.s3.ap-northeast-2.amazonaws.com/snape.jpg";
+            defaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/snape.jpg";
             ImageDto imageDto = new ImageDto(defaultImage, defaultFileName);
             Image image = new Image(imageDto);
             imageRepository.save(image);
@@ -172,5 +142,40 @@ public class UserService {
             ProfileResponseDto profileResponseDto = new ProfileResponseDto(image);
             return new ResponseEntity(profileResponseDto, HttpStatus.OK);
         }
+    }
+
+    //마이페이지 비밀번호 일치 확인 후 비밀번호 변경 모달창으로 이동
+    public ResponseEntity passwordCheck(UserDetailsImpl userDetails, PasswordCheckRequestDto passwordCheckRequestDto) {
+        String password = passwordCheckRequestDto.getPassword();
+        password = passwordEncoder.encode(password);
+        if(password.equals("")) {
+            throw new CustomException(ErrorCode.EMPTY_PASSWORD);
+        } else if(!password.equals(userDetails.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_CHECK);
+        }
+        return new ResponseEntity("비밀번호 일치", HttpStatus.OK);
+    }
+
+    // 마이페이지 비밀번호 변경
+    public ResponseEntity passwordChange(UserDetailsImpl userDetails, PasswordRequestDto passwordRequestDto) {
+        String password = passwordRequestDto.getPassword();
+        String passwordCheck = passwordRequestDto.getPasswordCheck();
+        if(userDetails == null){
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        } else if(password.equals("")) {
+            throw new CustomException(ErrorCode.EMPTY_PASSWORD);
+        } else if(!password.equals(passwordCheck)) {
+            throw new CustomException(ErrorCode.PASSWORD_CHECK);
+        } else if(password.length() < 6 || password.length() > 12) {
+            throw new CustomException(ErrorCode.PASSWORD_LEGNTH);
+        } else if(!Pattern.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^*+=-]).{6,12}$", password)) {
+            throw new CustomException(ErrorCode.PASSWORD_WRONG);
+        }
+
+        password = passwordEncoder.encode(password);
+        User user = userRepository.findUserById(userDetails.getUser().getId());
+        user.setPassword(password);
+        userRepository.save(user);
+        return new ResponseEntity("비밀번호 변경 완료", HttpStatus.OK);
     }
 }
