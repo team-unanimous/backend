@@ -17,6 +17,8 @@ public class CorsConfig {//크로스 오리진 정책 설정
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://52.79.226.242");
         config.addAllowedOrigin("http://dailyratingassingment.s3-website.ap-northeast-2.amazonaws.com/");
+        config.addAllowedOrigin("https://shayangju.shop");
+        config.addAllowedOrigin("https://52.79.227.215");
         config.addAllowedOrigin("");//모든 ip에 응답을 허용
         config.setAllowCredentials(true);
         config.addAllowedHeader("*");//모든 헤더에 응답 허용

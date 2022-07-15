@@ -135,8 +135,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //이메일 중복체크 및 인증메일 발송
         skipPathList.add("POST,/api/users/emails");
         skipPathList.add("PATCH,/api/users/password/**");
-        skipPathList.add("GET,/user/kakao/callback");
-        skipPathList.add("POST,/api/users/signup/profile/**");
         skipPathList.add("GET,/login/google/callback/**");
         skipPathList.add("POST,/api/users/signup/**");
         // 소켓 통신

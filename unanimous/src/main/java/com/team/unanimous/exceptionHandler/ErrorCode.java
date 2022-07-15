@@ -12,6 +12,8 @@ public enum ErrorCode {
     EMPTY_NICKNAME(HttpStatus.BAD_REQUEST,"닉네임을 입력해주세요."),
     EMPTY_USERNAME(HttpStatus.BAD_REQUEST,"이메일을 입력해주세요."),
     EMPTY_ISSUE(HttpStatus.BAD_REQUEST,"안건을 입력해주세요."),
+    EMPTY_CODE(HttpStatus.BAD_REQUEST,"인증코드를 입력해주세요."),
+    CODE_WRONG(HttpStatus.BAD_REQUEST,"인증코드는 4자리 입니다."),
     /* 401 UNAUTHORIZED : 인증되지 않은 사용자 */
     INVALID_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "만료되었거나 유효하지 않은 토큰입니다."),
     INVALID_LOGIN_ATTEMPT(HttpStatus.UNAUTHORIZED, "로그인에 실패하였습니다(소셜로그인 에러)"),

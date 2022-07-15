@@ -58,7 +58,7 @@ public class User {
     private int count;
 
 
-    public User(String username, String password, boolean isGoogle, String nickname) {
+    public User(String username) {
         this.username = username;
         this.password = password;
         this.isGoogle = isGoogle;

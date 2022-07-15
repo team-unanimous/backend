@@ -1,10 +1,6 @@
 package com.team.unanimous.service;
 
-import com.team.unanimous.UnanimousApplication;
-import com.team.unanimous.dto.requestDto.EmailRequestDto;
-import com.team.unanimous.dto.requestDto.NicknameRequestDto;
-import com.team.unanimous.dto.requestDto.PasswordRequestDto;
-import com.team.unanimous.dto.requestDto.SignupRequestDto;
+import com.team.unanimous.dto.requestDto.*;
 import com.team.unanimous.dto.responseDto.ProfileResponseDto;
 import com.team.unanimous.dto.responseDto.SignupResponseDto;
 import com.team.unanimous.dto.responseDto.UsernameResponseDto;
@@ -14,7 +10,7 @@ import com.team.unanimous.model.Image;
 import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.ImageRepository;
 import com.team.unanimous.repository.user.UserRepository;
-//import com.team.unanimous.service.S3.S3Uploader;
+import com.team.unanimous.security.UserDetailsImpl;
 import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,7 +34,12 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final ImageRepository imageRepository;
     private final S3Uploader s3Uploader;
+    //
+//    private final javaMailSender javaMailSender;
+//    private final RedisUtil redisUtil;
+    //
 
+    //이메일 유효성 검사및 중복검사
     public ResponseEntity email(EmailRequestDto emailRequestDto){
         String username = emailRequestDto.getUsername();
         String usernamePattern = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
@@ -49,10 +50,50 @@ public class UserService {
         } else if(userRepository.findByUsername(username).isPresent()){
             throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
+
+        //
+//        // 랜덤 키 생성
+//        Random random = new Random();
+//        String authKey = String.valueOf(random.nextInt(8888) + 1111);
+//        // 이메일 발송
+//        sendAuthEmail(emailRequestDto.getUsername(), authKey);
+//        //
+
         UsernameResponseDto usernameResponseDto = new UsernameResponseDto(username,"아이디 저장완료");
         return new ResponseEntity(usernameResponseDto, HttpStatus.OK);
     }
-    // 이메일 인증 및 회원가입
+//    private void sendAuthEmail(String username, String authKey) {
+//
+//        String subject = "Unanimous 인증번호 입니다.";
+//        String text = "인증번호는 " + authKey + " 입니다. <br/>";
+//
+//        try {
+//            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+//            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+//            helper.setTo(username);
+//            helper.setSubject(subject);
+//            helper.setText(text, true);
+//            javaMailSender.send(mimeMessage);
+//        } catch (MessagingException e) {
+//            e.printStackTrace();
+//        }
+//
+//        //유효 시간 (5분) 동안 {email, authKey} 저장
+//        redisUtil.setDataExpire(username, authKey, 60 * 5L);
+//    }
+
+    //이메일 인증 코드 확인
+//    public ResponseEntity emailCode(EmailCodeRequestDto emailCodeRequestDto){
+//        String code = emailCodeRequestDto.getCode();
+//        if(code.equals("")) {
+//            throw new CustomException(ErrorCode.EMPTY_CODE);
+//        } else if(code.length() != 4) {
+//            throw new CustomException(ErrorCode.CODE_WRONG);
+//        }
+//        return new ResponseEntity("인증코드 일치!", HttpStatus.OK);
+//    }
+
+    // 비밀번호 생성 및 회원가입
     public ResponseEntity signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
         String pattern = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^*+=-]).{6,12}$";
@@ -71,11 +112,9 @@ public class UserService {
         } else if(!signupRequestDto.getPassword().equals(passwordCheck)){
             throw new CustomException(ErrorCode.PASSWORD_CHECK);
         }
-
-
         password = passwordEncoder.encode(password);
         //user 객체에 requestDto에서 받아온값을 넣는다.
-        User user = new User(username, password, isGoogle, nickname);
+        User user = new User(username);
 
         //user 객체를 저장한다.
         userRepository.save(user);
@@ -149,5 +188,35 @@ public class UserService {
         userRepository.save(user);
         ProfileResponseDto profileResponseDto = new ProfileResponseDto(image);
         return new ResponseEntity(profileResponseDto, HttpStatus.OK);
+    }
+
+    //비밀번호 일치 확인
+    public ResponseEntity passwordCheck(UserDetailsImpl userDetails, PasswordCheckRequestDto passwordCheckRequestDto) {
+        String password = passwordCheckRequestDto.getPassword();
+        if(password.equals("")) {
+            throw new CustomException(ErrorCode.EMPTY_PASSWORD);
+        } else if(!passwordEncoder.matches(password, userDetails.getPassword())) {
+            throw new CustomException(ErrorCode.PASSWORD_CHECK);
+        }
+        return new ResponseEntity("비밀번호 일치", HttpStatus.OK);
+    }
+
+    // 비밀번호 변경
+    public ResponseEntity passwordChange(UserDetailsImpl userDetails, PasswordRequestDto passwordRequestDto) {
+        String password = passwordRequestDto.getPassword();
+        String passwordCheck = passwordRequestDto.getPasswordCheck();
+        if(password.equals("")) {
+            throw new CustomException(ErrorCode.EMPTY_PASSWORD);
+        } else if(!password.equals(passwordCheck)) {
+            throw new CustomException(ErrorCode.PASSWORD_CHECK);
+        } else if(password.length() < 6 || password.length() > 12) {
+            throw new CustomException(ErrorCode.PASSWORD_LEGNTH);
+        } else if(!Pattern.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^*+=-]).{6,12}$", password)) {
+            throw new CustomException(ErrorCode.PASSWORD_WRONG);
+        }
+        password = passwordEncoder.encode(password);
+        User user = new User(password);
+        userRepository.save(user);
+        return new ResponseEntity("비밀번호 변경 완료", HttpStatus.OK);
     }
 }
