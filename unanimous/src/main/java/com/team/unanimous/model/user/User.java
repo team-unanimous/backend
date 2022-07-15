@@ -54,11 +54,12 @@ public class User {
     private int count;
 
 
-    public User(String username, String password, boolean isGoogle, String nickname) {
+    public User(String username, String password, boolean isGoogle, String nickname, String userImage) {
         this.username = username;
         this.password = password;
         this.isGoogle = isGoogle;
         this.nickname = nickname;
+        this.userImage = userImage;
     }
 //    public User(String password) {
 //        this.password = password;

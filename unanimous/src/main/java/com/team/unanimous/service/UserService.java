@@ -59,6 +59,7 @@ public class UserService {
         String password = signupRequestDto.getPassword();
         String passwordCheck = signupRequestDto.getPasswordCheck();
         String nickname = "게스트";
+        String defaultImage = "https://s3unanimous.s3.ap-northeast-2.amazonaws.com/snape.jpg";
 
         boolean isGoogle = false;
         // 아아디 정규식 맞지않는 경우 오류메세지를 전달해준다.
@@ -75,7 +76,7 @@ public class UserService {
 
         password = passwordEncoder.encode(password);
         //user 객체에 requestDto에서 받아온값을 넣는다.
-        User user = new User(username, password, isGoogle, nickname);
+        User user = new User(username, password, isGoogle, nickname, defaultImage);
 
         //user 객체를 저장한다.
         userRepository.save(user);
@@ -142,13 +143,13 @@ public class UserService {
 
     //s3이미지 업로드
     public ResponseEntity signupImage(MultipartFile file, Long userId) throws IOException {
-        String defaultimage;
-        String defaultfilename;
+        String defaultImage;
+        String defaultFileName;
         if(file.isEmpty()){
             User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
-            defaultfilename = "snape.jpg";
-            defaultimage = "https://s3unanimous.s3.ap-northeast-2.amazonaws.com/snape.jpg";
-            ImageDto imageDto = new ImageDto(defaultimage, defaultfilename);
+            defaultFileName = "snape.jpg";
+            defaultImage = "https://s3unanimous.s3.ap-northeast-2.amazonaws.com/snape.jpg";
+            ImageDto imageDto = new ImageDto(defaultImage, defaultFileName);
             Image image = new Image(imageDto);
             imageRepository.save(image);
             user.updateImage(image);
