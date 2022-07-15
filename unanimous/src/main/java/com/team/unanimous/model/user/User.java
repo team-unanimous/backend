@@ -2,8 +2,6 @@ package com.team.unanimous.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.team.unanimous.dto.requestDto.EmailRequestDto;
-import com.team.unanimous.dto.requestDto.SignupRequestDto;
 import com.team.unanimous.model.Image;
 import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.team.TeamUser;
@@ -54,7 +52,7 @@ public class User {
     private int count;
 
 
-    public User(String username, String password, boolean isGoogle, String nickname) {
+    public User(String username) {
         this.username = username;
         this.password = password;
         this.isGoogle = isGoogle;

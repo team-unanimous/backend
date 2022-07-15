@@ -12,7 +12,6 @@ import com.team.unanimous.repository.team.TeamRepository;
 import com.team.unanimous.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 
