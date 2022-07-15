@@ -42,6 +42,26 @@ public class JwtDecoder {
         return username;
     }
 
+    public String decodeNickname(String token) {
+        DecodedJWT decodedJWT = isValidToken(token)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_AUTH_TOKEN));
+
+        Date expiredDate = decodedJWT
+                .getClaim(CLAIM_EXPIRED_DATE)
+                .asDate();
+
+        Date now = new Date();
+        if (expiredDate.before(now)) {
+            throw new CustomException(ErrorCode.INVALID_AUTH_TOKEN);
+        }
+
+        String nickname = decodedJWT
+                .getClaim(CLAIM_USER_NICKNAME)
+                .asString();
+
+        return nickname;
+    }
+
     private Optional<DecodedJWT> isValidToken(String token) {
         DecodedJWT jwt = null;
 

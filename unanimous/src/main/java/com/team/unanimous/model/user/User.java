@@ -3,9 +3,11 @@ package com.team.unanimous.model.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.team.unanimous.model.Image;
+import com.team.unanimous.model.chat.ChatRoomUser;
 import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.team.TeamUser;
 import lombok.*;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -31,12 +33,16 @@ public class User {
     private String password;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<TeamUser> teamList;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
     private List<MeetingUser> meeting;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "user",fetch = FetchType.LAZY)
+    private List<ChatRoomUser> chatRoom;
 
     @Column
     private String userImage;

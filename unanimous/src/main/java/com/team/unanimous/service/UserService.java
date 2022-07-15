@@ -15,15 +15,11 @@ import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.io.IOException;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 @Service
@@ -183,7 +179,7 @@ public class UserService {
 //        user.update(nickname);
 //        userRepository.save(user);
 
-    //s3이미지 업로드
+    // s3이미지 업로드
     public ResponseEntity signupImage(MultipartFile file, Long userId) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
         Image image = new Image(s3Uploader.upload(file, "ProfileImage"));

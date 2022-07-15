@@ -20,6 +20,7 @@ public enum ErrorCode {
 
     /* 403 FORBIDDEN : 권한이 없는 사용자 */
     INVALID_AUTHORITY(HttpStatus.FORBIDDEN,"권한이 없는 사용자 입니다"),
+    INVALID_MEETING_ROOM(HttpStatus.FORBIDDEN,"회의에 참석할 수 없는 사용자 입니다"),
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
     ISSUE_NOT_FOUND(HttpStatus.NOT_FOUND,"해당 안건을 찾을 수 없습니다"),
@@ -27,10 +28,12 @@ public enum ErrorCode {
     TEAM_NOT_FOUND(HttpStatus.NOT_FOUND,"팀을 찾을 수 없습니다"),
     NOT_FOUND_USER(HttpStatus.NOT_FOUND, "유저를 찾을 수 없습니다"),
     USER_PASSWORD_NOT_FOUND(HttpStatus.NOT_FOUND, "유저의 아이디,비밀번호를 다시 확인해주세요."),
+    ROOM_NOT_FOUND(HttpStatus.NOT_FOUND,"방이 존재하지 않습니다"),
     AUTH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "로그인이 필요한 서비스입니다"),
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
     EXCESS_TEAM_NUMBER(HttpStatus.CONFLICT,"가입가능한 팀 갯수를 초과했습니다 (최대 5개)"),
     TEAM_MANAGER_CONFLICT(HttpStatus.CONFLICT,"팀장은 팀 탈퇴 및 자신을 강퇴시킬 수 없습니다"),
+    MEETING_MEMBER_HAS_FULL(HttpStatus.CONFLICT,"회의에 참여할 수 있는 최대 인원을 초과했습니다 (최대 8명)"),
     DUPLICATE_TEAM_USER(HttpStatus.CONFLICT,"팀에 중복된 유저가 존재합니다."),
     DUPLICATE_NICKNAME(HttpStatus.CONFLICT, "중복된 닉네임명이 존재합니다"),
     DUPLICATE_TEAM_NAME(HttpStatus.CONFLICT,"중복된 팀 이름이 존재합니다"),

@@ -56,15 +56,15 @@ public class Meeting extends Timestamped {
     private User meetingCreator;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "meeting")
+    @OneToMany(mappedBy = "meeting",fetch = FetchType.LAZY)
     private List<Issue> meetingIssue;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "meeting")
+    @OneToMany(mappedBy = "meeting",fetch = FetchType.LAZY)
     private List<MeetingUser> user;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
 
