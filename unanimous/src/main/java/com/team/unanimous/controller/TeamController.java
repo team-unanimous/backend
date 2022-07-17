@@ -79,7 +79,7 @@ public class TeamController {
     @PatchMapping("/api/teams/{teamId}")
     public ResponseEntity updateTeam(@RequestParam("teamImage") MultipartFile multipartFile,
                                      @PathVariable Long teamId,
-                                     @RequestBody TeamRequestDto requestDto,
+                                     @RequestPart("teamName") TeamRequestDto requestDto,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails)throws IOException {
         return teamService.updateTeam(multipartFile,teamId,requestDto,userDetails);
     }

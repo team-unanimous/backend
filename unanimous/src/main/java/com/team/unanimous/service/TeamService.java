@@ -1,6 +1,7 @@
 package com.team.unanimous.service;
 
 
+import com.team.unanimous.dto.ImageDto;
 import com.team.unanimous.dto.requestDto.BanRequestDto;
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.TeamInviteRequestDto;
@@ -19,6 +20,7 @@ import com.team.unanimous.repository.team.TeamUserRepository;
 import com.team.unanimous.repository.user.UserRepository;
 import com.team.unanimous.security.UserDetailsImpl;
 //import com.team.unanimous.service.S3.S3Uploader;
+import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +41,8 @@ public class TeamService {
     private final UserRepository userRepository;
 
     private final TeamUserRepository teamUserRepository;
+    private final TeamImageRepository teamImageRepository;
+    private final S3Uploader s3Uploader;
 //    private final S3Uploader s3Uploader;
 
 
@@ -89,10 +93,18 @@ public class TeamService {
         } else if (teamname.isEmpty()){
             throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
         }
+
+        String teamDefaultFileName = "teamDefaultImage.png";
+        String teamDefaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/teamDefaultImage.png";
+        ImageDto imageDto = new ImageDto(teamDefaultImage, teamDefaultFileName);
+        TeamImage teamImage = new TeamImage(imageDto);
+        teamImageRepository.save(teamImage);
+
         Team team = Team.builder()
                 .teamname(teamname)
                 .uuid(UUID.randomUUID().toString())
                 .teamManager(userDetails.getUser().getNickname())
+                .teamImage(teamImage)
                 .build();
         teamRepository.save(team);
         TeamUser teamUser = new TeamUser(user,team);
@@ -126,7 +138,7 @@ public class TeamService {
             throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
         }
 
-        return new TeamResponseDto(team.getId(), team.getTeamname(), team.getUuid());
+        return new TeamResponseDto(team.getId(), team.getTeamname(), team.getUuid(), team.getTeamImage().getTeamImageUrl());
     }
 
     //팀 가입하기
@@ -173,6 +185,26 @@ public class TeamService {
     @Transactional
     public ResponseEntity updateTeam(MultipartFile multipartFile, Long teamId, TeamRequestDto requestDto, UserDetailsImpl userDetails)throws IOException {
         Team team = teamRepository.findTeamById(teamId);
+        TeamImage teamImage = teamImageRepository.findByTeamImageId(team.getTeamImage().getTeamImageId());
+        if(multipartFile.isEmpty()){
+            String teamDefaultFileName = "teamDefaultImage.png";
+            String teamDefaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/teamDefaultImage.png";
+            if(!teamImage.getFilename().equals("teamDefaultImage.png")){
+                s3Uploader.deleteTeamImage(teamImage.getTeamImageId());
+            }
+
+            teamImage.setTeamImageUrl(teamDefaultImage);
+            teamImage.setFilename(teamDefaultFileName);
+        }else {
+            ImageDto imageDto = s3Uploader.upload(multipartFile, "TeamProfileImage");
+            if(!teamImage.getFilename().equals("teamDefaultImage.png")){
+                s3Uploader.deleteTeamImage(teamImage.getTeamImageId());
+            }
+            teamImage.setTeamImageUrl(imageDto.getImageUrl());
+            teamImage.setFilename(imageDto.getFileName());
+        }
+
+
         if (team == null){
             throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
         }

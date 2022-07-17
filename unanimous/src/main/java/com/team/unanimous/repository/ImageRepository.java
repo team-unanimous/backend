@@ -3,6 +3,8 @@ package com.team.unanimous.repository;
 import com.team.unanimous.model.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+
 public interface ImageRepository extends JpaRepository<Image, Long> {
 
 //    Optional<Image> findByImageUrl(String imageUrl);
@@ -16,4 +18,6 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
 //    Optional<Image> findByImageUrlAndUserId(String imageUrl, Long userId);
     // 후기 삭제 시 imageRepository에서 이미지도 삭제
 //    void deleteByImageUrl(String imageUrl) ;
+
+    Image findByImageId(Long ImageId);
 }

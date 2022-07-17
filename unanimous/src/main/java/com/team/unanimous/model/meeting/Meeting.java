@@ -60,7 +60,7 @@ public class Meeting extends Timestamped {
     private List<Issue> meetingIssue;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "meeting",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "meeting",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MeetingUser> user;
 
     @JsonBackReference

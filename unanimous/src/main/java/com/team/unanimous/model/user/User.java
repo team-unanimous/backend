@@ -45,9 +45,6 @@ public class User {
     private List<ChatRoomUser> chatRoom;
 
     @Column
-    private String userImage;
-
-    @Column
     private boolean isGoogle;
 
     @OneToOne
@@ -59,12 +56,12 @@ public class User {
 
 
 
-    public User(String username, String password, boolean isGoogle, String nickname, String userImage) {
+    public User(String username, String password, boolean isGoogle, String nickname, Image image) {
         this.username = username;
         this.password = password;
         this.isGoogle = isGoogle;
         this.nickname = nickname;
-        this.userImage = userImage;
+        this.image = image;
     }
     public User(String password) {
         this.password = password;
@@ -72,11 +69,11 @@ public class User {
 
     //카카오 회원가입 + 구글 회원가입
     @Builder
-    public User( String username, String nickname, String password, String userImage, boolean isGoogle) {
+    public User( String username, String nickname, String password, Image image, boolean isGoogle) {
         this.username = username;
         this.nickname = nickname;
         this.password = password;
-        this.userImage = userImage;
+        this.image = image;
         this.isGoogle = isGoogle;
     }
     public void updateImage(Image image){
