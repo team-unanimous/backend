@@ -38,6 +38,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final ImageRepository imageRepository;
     private final S3Uploader s3Uploader;
+    
 
     //이메일 코드인증(수정필요)
     public ResponseEntity email(EmailRequestDto emailRequestDto){

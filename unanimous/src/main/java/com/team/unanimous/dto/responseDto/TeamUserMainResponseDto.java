@@ -13,6 +13,7 @@ public class TeamUserMainResponseDto {
 
     private String teamname;
 
+    private String teamManager;
     private String teamImage;
 
     private String uuid;
@@ -24,5 +25,6 @@ public class TeamUserMainResponseDto {
         this.uuid = team.getUuid();
         this.teamImage = team.getTeamImage().getTeamImageUrl();
         this.user = nicknameResponseDtos;
+        this.teamManager = team.getTeamManager();
     }
 }

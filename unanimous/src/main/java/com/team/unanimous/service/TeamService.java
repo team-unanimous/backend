@@ -84,7 +84,7 @@ public class TeamService {
             throw new CustomException(ErrorCode.EXCESS_TEAM_NUMBER);
         }
         String teamname = requestDto.getTeamname().trim();
-        if (teamname.length() > 8){
+        if (teamname.length() > 20){
             throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
         } else if (teamname == null){
             throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
@@ -109,7 +109,7 @@ public class TeamService {
         teamRepository.save(team);
         TeamUser teamUser = new TeamUser(user,team);
         teamUserRepository.save(teamUser);
-        return ResponseEntity.ok("팀이 생성되었습니다!");
+        return ResponseEntity.ok(team.getId());
     }
 
     //팀 선택 페이지
@@ -183,27 +183,8 @@ public class TeamService {
 
     // 팀 프로필 사진, 팀 네임
     @Transactional
-    public ResponseEntity updateTeam(MultipartFile multipartFile, Long teamId, TeamRequestDto requestDto, UserDetailsImpl userDetails)throws IOException {
+    public ResponseEntity updateTeam(Long teamId, TeamRequestDto requestDto, UserDetailsImpl userDetails)throws IOException {
         Team team = teamRepository.findTeamById(teamId);
-        TeamImage teamImage = teamImageRepository.findByTeamImageId(team.getTeamImage().getTeamImageId());
-        if(multipartFile.isEmpty()){
-            String teamDefaultFileName = "teamDefaultImage.png";
-            String teamDefaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/teamDefaultImage.png";
-            if(!teamImage.getFilename().equals("teamDefaultImage.png")){
-                s3Uploader.deleteTeamImage(teamImage.getTeamImageId());
-            }
-
-            teamImage.setTeamImageUrl(teamDefaultImage);
-            teamImage.setFilename(teamDefaultFileName);
-        }else {
-            ImageDto imageDto = s3Uploader.upload(multipartFile, "TeamProfileImage");
-            if(!teamImage.getFilename().equals("teamDefaultImage.png")){
-                s3Uploader.deleteTeamImage(teamImage.getTeamImageId());
-            }
-            teamImage.setTeamImageUrl(imageDto.getImageUrl());
-            teamImage.setFilename(imageDto.getFileName());
-        }
-
 
         if (team == null){
             throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
@@ -228,15 +209,15 @@ public class TeamService {
         team.updateTeam(requestDto);
 //        team.updateImage(teamImage);
         teamRepository.save(team);
-        return ResponseEntity.ok("팀 프로필 수정 완료");
+        return ResponseEntity.ok("팀 닉네임 수정 완료");
     }
 
     // 팀원 강퇴
     @Transactional
-    public ResponseEntity banUser(Long teamId, BanRequestDto requestDto,UserDetailsImpl userDetails){
-        String nickname = requestDto.getNickname();
+    public ResponseEntity banUser(Long teamId, Long userId,UserDetailsImpl userDetails){
+//        String nickname = requestDto.getNickname();
         Team team = teamRepository.findTeamById(teamId);
-        User user = userRepository.findUserByNickname(nickname);
+        User user = userRepository.findUserById(userId);
         if (user == null){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
@@ -255,18 +236,19 @@ public class TeamService {
     // 팀 탈퇴
     @Transactional
     public ResponseEntity exitTeam(Long teamId,
-                                   BanRequestDto requestDto,
+                                   Long userId,
                                    UserDetailsImpl userDetails){
-        String nickname = requestDto.getNickname();
+//        String nickname = requestDto.getNickname();
         Team team = teamRepository.findTeamById(teamId);
-        User user = userRepository.findUserByNickname(nickname);
+        User user = userRepository.findUserById(userId);
         if (user == null){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
-        if (!(team.getTeamManager().equals(userDetails.getUser().getNickname()))){
-            throw new CustomException(ErrorCode.INVALID_AUTHORITY);
-        }
-        if (nickname.equals(team.getTeamManager())){
+        //유효성 검사가 이상해서 주석처리함 (팀원확인필요)
+//        if (!(team.getTeamManager().equals(userDetails.getUser().getNickname()))){
+//            throw new CustomException(ErrorCode.INVALID_AUTHORITY);
+//        }
+        if (user.getNickname().equals(team.getTeamManager())){
             throw new CustomException(ErrorCode.TEAM_MANAGER_CONFLICT);
         }
         TeamUser teamUser = teamUserRepository.findAllByTeamIdAndUserId(teamId, user.getId());
@@ -281,7 +263,8 @@ public class TeamService {
                                             Long teamId,
                                             UserDetailsImpl userDetails){
         String user = nicknameRequestDto.getNickname();
-        if (user == null){
+        User user1 = userRepository.findUserByNickname(user);
+        if (user1 == null){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
         Team team = teamRepository.findTeamById(teamId);
@@ -293,5 +276,29 @@ public class TeamService {
         team.setTeamManager(user);
         teamRepository.save(team);
         return ResponseEntity.ok(user+" 님이"+team.getTeamname()+" 팀의 팀장이 되었습니다");
+    }
+
+    public ResponseEntity teamProfileImage(Long teamId, MultipartFile multipartFile)throws IOException{
+        Team team = teamRepository.findTeamById(teamId);
+        TeamImage teamImage = teamImageRepository.findByTeamImageId(team.getTeamImage().getTeamImageId());
+        if(multipartFile.isEmpty()){
+            String teamDefaultFileName = "teamDefaultImage.png";
+            String teamDefaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/teamDefaultImage.png";
+            if(!teamImage.getFilename().equals("teamDefaultImage.png")){
+                s3Uploader.deleteTeamImage(teamImage.getTeamImageId());
+            }
+
+            teamImage.setTeamImageUrl(teamDefaultImage);
+            teamImage.setFilename(teamDefaultFileName);
+        }else {
+            ImageDto imageDto = s3Uploader.upload(multipartFile, "TeamProfileImage");
+            if(!teamImage.getFilename().equals("teamDefaultImage.png")){
+                s3Uploader.deleteTeamImage(teamImage.getTeamImageId());
+            }
+            teamImage.setTeamImageUrl(imageDto.getImageUrl());
+            teamImage.setFilename(imageDto.getFileName());
+        }
+        teamRepository.save(team);
+        return ResponseEntity.ok("팀 이미지 수정완료");
     }
 }

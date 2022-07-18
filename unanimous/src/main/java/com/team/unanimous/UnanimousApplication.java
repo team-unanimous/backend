@@ -1,6 +1,9 @@
 package com.team.unanimous;
 
 
+import com.team.unanimous.model.Image;
+import com.team.unanimous.model.user.User;
+import com.team.unanimous.repository.user.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -15,13 +18,16 @@ public class UnanimousApplication {
 //    public static final String APPLICATION_LOCATIONS2 = "spring.config.location="
 //            + "classpath:application.properties";
 //
+
     public static void main(String[] args) {
+
 //        new SpringApplicationBuilder(UnanimousApplication.class)
 //                .properties(APPLICATION_LOCATIONS)
 //                .properties(APPLICATION_LOCATIONS2)
 //                .run(args);
 //
         SpringApplication.run(UnanimousApplication.class, args);
+
     }
 
 }

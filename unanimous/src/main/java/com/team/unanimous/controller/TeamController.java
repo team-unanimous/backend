@@ -77,27 +77,26 @@ public class TeamController {
 
     // 팀 프로필 수정
     @PatchMapping("/api/teams/{teamId}")
-    public ResponseEntity updateTeam(@RequestParam("teamImage") MultipartFile multipartFile,
-                                     @PathVariable Long teamId,
-                                     @RequestPart("teamName") TeamRequestDto requestDto,
+    public ResponseEntity updateTeam(@PathVariable Long teamId,
+                                     @RequestBody TeamRequestDto requestDto,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails)throws IOException {
-        return teamService.updateTeam(multipartFile,teamId,requestDto,userDetails);
+        return teamService.updateTeam(teamId,requestDto,userDetails);
     }
 
     // 팀원 강퇴
-    @DeleteMapping("/api/teams/{teamId}/ban")
+    @DeleteMapping("/api/teams/{teamId}/{userId}/ban")
     public ResponseEntity banUser(@PathVariable Long teamId,
-                                  @RequestBody BanRequestDto requestDto,
+                                  @PathVariable Long userId,
                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return teamService.banUser(teamId,requestDto,userDetails);
+        return teamService.banUser(teamId,userId,userDetails);
     }
 
     // 팀 탈퇴
-    @DeleteMapping("/api/teams/{teamId}/exit")
+    @DeleteMapping("/api/teams/{teamId}/{userId}/exit")
     public ResponseEntity exitTeam(@PathVariable Long teamId,
-                                  @RequestBody BanRequestDto requestDto,
+                                  @PathVariable Long userId,
                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return teamService.exitTeam(teamId,requestDto,userDetails);
+        return teamService.exitTeam(teamId,userId,userDetails);
     }
 
     // 팀장 위임
@@ -106,5 +105,10 @@ public class TeamController {
                                             @PathVariable Long teamId,
                                             @AuthenticationPrincipal UserDetailsImpl userDetails){
         return teamService.changeTeamManager(nicknameRequestDto,teamId,userDetails);
+    }
+
+    @PatchMapping("/api/teams/{teamId}/teamImage")
+    public ResponseEntity teamProfileImage(@PathVariable Long teamId, @RequestParam("profileTeamImage") MultipartFile multipartFile)throws IOException{
+        return teamService.teamProfileImage(teamId,multipartFile);
     }
 }

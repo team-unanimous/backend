@@ -79,4 +79,12 @@ public class User {
     public void updateImage(Image image){
         this.image = image;
     }
+
+    public User(String username, String nickname, String password){
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+    }
+
+
 }
