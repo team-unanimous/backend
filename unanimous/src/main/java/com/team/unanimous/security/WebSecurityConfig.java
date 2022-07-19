@@ -132,6 +132,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         skipPathList.add("POST,/api/users/emails");
         skipPathList.add("PATCH,/api/users/password/**");
         skipPathList.add("POST,/api/users/signup/**");
+        skipPathList.add("POST,/api/users/emails/**");
+        //비밀번호 찾기 이메일 전송
+        skipPathList.add("POST,/api/users/passwordFind");
         // 소켓 통신
         skipPathList.add("GET,/ws-stomp/**/**");
         skipPathList.add("GET,/ws-stomp/**");

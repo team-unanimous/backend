@@ -29,7 +29,7 @@ public final class JwtTokenUtils {
         String token = null;
         try {
             token = JWT.create()
-                    .withIssuer("Shinsang")
+                    .withIssuer("Unanimous")
                     .withClaim(CLAIM_USER_ID, userDetails.getUser().getId())
                     .withClaim(CLAIM_USER_NAME, userDetails.getUsername())
                     .withClaim(CLAIM_USER_NICKNAME, userDetails.getUser().getNickname())
@@ -41,6 +41,25 @@ public final class JwtTokenUtils {
             System.out.println(e.getMessage());
         }
 
+        return token;
+    }
+    public static String generateRefreshToken(UserDetailsImpl userDetails){
+
+        String token = null;
+
+        try {
+            token = JWT.create()
+                    .withIssuer("Unanimous")
+                    .withClaim(CLAIM_USER_ID, userDetails.getUser().getId())
+                    .withClaim(CLAIM_USER_NAME, userDetails.getUsername())
+                    .withClaim(CLAIM_USER_NICKNAME, userDetails.getUser().getNickname())
+                    .withClaim(CLAIM_USER_IMAGE, userDetails.getUser().getImage().getImageUrl())
+                    // 토큰 만료 일시 = 현재 시간 + 토큰 유효기간)
+                    .withClaim(CLAIM_EXPIRED_DATE, new Date(System.currentTimeMillis() + JWT_TOKEN_VALID_MILLI_SEC))
+                    .sign(generateAlgorithm());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return token;
     }
 

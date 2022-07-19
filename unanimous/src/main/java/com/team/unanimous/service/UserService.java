@@ -163,10 +163,9 @@ public class UserService {
     //마이페이지 비밀번호 일치 확인 후 비밀번호 변경 모달창으로 이동
     public ResponseEntity passwordCheck(UserDetailsImpl userDetails, PasswordCheckRequestDto passwordCheckRequestDto) {
         String password = passwordCheckRequestDto.getPassword();
-        password = passwordEncoder.encode(password);
         if(password.equals("")) {
             throw new CustomException(ErrorCode.EMPTY_PASSWORD);
-        } else if(!password.equals(userDetails.getPassword())) {
+        } else if(!passwordEncoder.matches(password, userDetails.getPassword())){
             throw new CustomException(ErrorCode.PASSWORD_CHECK);
         }
         return new ResponseEntity("비밀번호 일치", HttpStatus.OK);

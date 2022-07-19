@@ -22,6 +22,8 @@ public class FormLoginSuccessHandler extends SavedRequestAwareAuthenticationSucc
         response.addHeader(AUTH_HEADER, TOKEN_TYPE + " " + token);
         System.out.println(token);
 
+//    public void modifyProfile(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication)
+//
 
 //        //User nicakname 내려주기 - 동관 천재님꺼 참고
 //        response.setContentType("application/json");
