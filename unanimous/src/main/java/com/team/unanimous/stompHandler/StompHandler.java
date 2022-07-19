@@ -63,6 +63,7 @@ public class StompHandler implements ChannelInterceptor {
             // header정보에서 구독 destination정보를 얻고, roomId를 추출한다.
             // roomId를 URL로 전송해주고 있어 추출 필요
             String roomId = chatMessageService.getRoomId(Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
+            System.out.println("1"+roomId);
 //
 //            // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑해 놓는다.(나중에 특정 세션이 어떤 채팅방에 들어가 있는지 알기 위함)
 //            // sessionId는 현재들어와있는 유저를 확인하기 위함이다.
@@ -76,6 +77,7 @@ public class StompHandler implements ChannelInterceptor {
             String username = jwtDecoder.decodeUsername(jwtToken);
             User user = userRepository.findUserByUsername(username);
             ChatRoom chatRoom = chatRoomRepository.findChatRoomById(Long.valueOf(roomId));
+            System.out.println(chatRoom.getId());
 
             List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByChatRoom(chatRoom);
             if (chatRoomUsers.size() > 7){

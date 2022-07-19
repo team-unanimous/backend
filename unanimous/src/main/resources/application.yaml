@@ -1,8 +1,8 @@
 cloud:
   aws:
     credentials:
-      accessKey: ${Image-access-key}
-      secretKey: ${Image-secret-key}
+      accessKey: ${Image_access_key}
+      secretKey: ${Image_secret_key}
     s3:
       bucket: s3-unanimous
     region:

@@ -56,11 +56,11 @@ public class Meeting extends Timestamped {
     private User meetingCreator;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "meeting",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "meeting",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Issue> meetingIssue;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "meeting",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "meeting",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MeetingUser> user;
 
     @JsonBackReference
@@ -68,12 +68,13 @@ public class Meeting extends Timestamped {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    public void updateMeeting(MeetingRequestDto requestDto){
+    public void updateMeeting(MeetingRequestDto requestDto, String meetingOverTime){
         this.meetingTitle = requestDto.getMeetingTitle();
         this.meetingDate = requestDto.getMeetingDate();
         this.meetingTime = requestDto.getMeetingTime();
         this.meetingSum = requestDto.getMeetingSum();
         this.meetingTheme = requestDto.getMeetingTheme();
         this.meetingDuration = requestDto.getMeetingDuration();
+        this.meetingOverTime = meetingOverTime;
     }
 }

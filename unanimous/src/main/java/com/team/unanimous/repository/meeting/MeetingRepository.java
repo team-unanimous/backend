@@ -15,4 +15,6 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
 
     List<Meeting> findAllByOrderByModifiedAtDesc();
 
+    List<Meeting> findAllByOrderByMeetingDateAsc();
+
 }

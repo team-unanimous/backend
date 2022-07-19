@@ -80,7 +80,7 @@ public class TeamService {
             throw new CustomException(ErrorCode.EXCESS_TEAM_NUMBER);
         }
         String teamname = requestDto.getTeamname().trim();
-        if (teamname.length() > 8){
+        if (teamname.length() > 20){
             throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
         } else if (teamname == null){
             throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
@@ -97,7 +97,7 @@ public class TeamService {
         teamRepository.save(team);
         TeamUser teamUser = new TeamUser(user,team);
         teamUserRepository.save(teamUser);
-        return ResponseEntity.ok("팀이 생성되었습니다!");
+        return ResponseEntity.ok(team.getId());
     }
 
     //팀 선택 페이지
@@ -249,7 +249,8 @@ public class TeamService {
                                             Long teamId,
                                             UserDetailsImpl userDetails){
         String user = nicknameRequestDto.getNickname();
-        if (user == null){
+        User user1 = userRepository.findUserByNickname(user);
+        if (user1 == null){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
         Team team = teamRepository.findTeamById(teamId);
