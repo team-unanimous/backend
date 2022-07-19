@@ -1,5 +1,6 @@
 package com.team.unanimous.service;
 
+import com.team.unanimous.dto.responseDto.ChatMessageResponseDto;
 import com.team.unanimous.model.chat.ChatMessage;
 import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.chat.ChatMessageRepository;
@@ -31,18 +32,29 @@ public class ChatMessageService {
 
     // 채팅방에 메시지 발송
     public void sendChatMessage(ChatMessage chatMessage) {
-        redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
-
+        User user = userRepository.findUserByNickname(chatMessage.getNickname());
         // 회의 입장
         if (ChatMessage.MessageType.ENTER.equals(chatMessage.getType())) {
-            chatMessage.setMessage(chatMessage.getSender() + "님이 회의에 입장했습니다.");
-            chatMessage.setSender("\uD83D\uDD14 [알림]");
+            chatMessage.setMessage(user.getNickname() + "님이 방에 입장했습니다.");
+            chatMessage.setSender("[알림]");
+            ChatMessageResponseDto chatMessageEnterResponseDto = new ChatMessageResponseDto(chatMessage);
+            redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageEnterResponseDto);
         }
         // 회의 퇴장
         if (ChatMessage.MessageType.QUIT.equals(chatMessage.getType())) {
-            chatMessage.setMessage(chatMessage.getSender() + "님이 회의에서 나갔습니다.");
-            chatMessage.setSender("\uD83D\uDD14 [알림]");
+            chatMessage.setMessage(user.getNickname() + "님이 회의에서 나갔습니다.");
+            chatMessage.setSender("[알림]");
+            ChatMessageResponseDto chatMessageEnterResponseDto = new ChatMessageResponseDto(chatMessage);
+            redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageEnterResponseDto);
         }
+        // 안건 노출
+        if (ChatMessage.MessageType.ISSUE.equals(chatMessage.getType())){
+            chatMessage.setMessage(chatMessage.getMessage());
+            chatMessage.setSender("[알림]");
+            ChatMessageResponseDto chatMessageEnterResponseDto = new ChatMessageResponseDto(chatMessage);
+            redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageEnterResponseDto);
+        }
+        redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
     }
 
     public void save(ChatMessage chatMessage) {

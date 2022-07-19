@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -161,7 +162,7 @@ public class MeetingService {
 
     // 예약 중인 미팅 목록
     public List<MeetingResponseDto> getYetMeetings(Long teamId){
-        List<Meeting> meetingList = meetingRepository.findAllByOrderByModifiedAtDesc();
+        List<Meeting> meetingList = meetingRepository.findAllByOrderByMeetingDateAsc();
         List<Meeting> meetingList1 = new ArrayList<>();
         for (Meeting meeting : meetingList){
             if (meeting.getTeam().getId().equals(teamId)){
@@ -256,7 +257,24 @@ public class MeetingService {
             throw new CustomException(ErrorCode.MEETING_NAME_LENGTH);
         }
 
-        meeting.updateMeeting(requestDto);
+        String meetingTime = requestDto.getMeetingTime().split(":")[0];
+        String meetingDuration = requestDto.getMeetingDuration().split("시")[0];
+        int meetingTime2 = Integer.parseInt(meetingTime);
+        int meetingDuration2 = Integer.parseInt(meetingDuration);
+        int meetingOverTime2 = meetingTime2+meetingDuration2;
+        String meetingOverTime = "";
+
+        if (meetingOverTime2 >= 24){
+            meetingOverTime2 -= 24;
+        }
+
+        if (meetingOverTime2 < 10){
+            meetingOverTime = "0"+meetingOverTime2+":00";
+        } else {
+            meetingOverTime = meetingOverTime2+":00";
+        }
+
+        meeting.updateMeeting(requestDto,meetingOverTime);
         meetingRepository.save(meeting);
         return ResponseEntity.ok("미팅 정보 수정 완료");
     }
