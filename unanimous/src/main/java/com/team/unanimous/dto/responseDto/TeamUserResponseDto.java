@@ -13,12 +13,14 @@ public class TeamUserResponseDto {
 
     private String teamname;
     private String uuid;
+    private String teamImage;
 
 
     public TeamUserResponseDto(Team team) {
         this.teamId = team.getId();
         this.teamname = team.getTeamname();
         this.uuid = team.getUuid();
+        this.teamImage=team.getTeamImage().getTeamImageUrl();
 //        this.userCnt = userCnt;
 //        this.nicknameResponseDtos = nicknameResponseDtos;
     }

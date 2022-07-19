@@ -3,12 +3,14 @@ package com.team.unanimous.model;
 import com.team.unanimous.dto.ImageDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 
 @NoArgsConstructor
 @Getter
+@Setter
 @Entity
 public class Image{
 
@@ -21,6 +23,7 @@ public class Image{
 
     @Column
     private String imageUrl;
+
 
     public Image(ImageDto imageDto){
         this.filename = imageDto.getFileName();

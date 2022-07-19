@@ -42,7 +42,7 @@ public class UserController {
     }
 
     //마이페이지 비밀번호 변경
-    @PostMapping("/api/users/passwordChange")
+    @PatchMapping("/api/users/passwordChange")
     public ResponseEntity passwordChange(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody PasswordRequestDto passwordRequestDto) {
         return userService.passwordChange(userDetails, passwordRequestDto);
     }

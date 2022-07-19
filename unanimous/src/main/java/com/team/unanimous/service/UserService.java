@@ -63,7 +63,8 @@ public class UserService {
         String password = signupRequestDto.getPassword();
         String passwordCheck = signupRequestDto.getPasswordCheck();
         String nickname = "게스트";
-        String defaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/snape.jpg";
+        String defaultFileName = "defaultImage.jpeg";
+        String defaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/defaultImage.jpeg";
 
         boolean isGoogle = false;
         // 아아디 정규식 맞지않는 경우 오류메세지를 전달해준다.
@@ -83,8 +84,12 @@ public class UserService {
             throw new CustomException(ErrorCode.PASSWORD_CHECK);
         }
         password = passwordEncoder.encode(password);
+
+        ImageDto imageDto = new ImageDto(defaultImage, defaultFileName);
+        Image image = new Image(imageDto);
+        imageRepository.save(image);
         //user 객체에 requestDto에서 받아온값을 넣는다.
-        User user = new User(username, password, isGoogle, nickname, defaultImage);
+        User user = new User(username, password, isGoogle, nickname, image);
         //user 객체를 저장한다.
         userRepository.save(user);
 
@@ -122,23 +127,34 @@ public class UserService {
     public ResponseEntity signupImage(MultipartFile file, Long userId) throws IOException {
         String defaultImage;
         String defaultFileName;
+        User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
+        Image image = imageRepository.findByImageId(user.getImage().getImageId());
+
         if(file.isEmpty()){
-            User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
-            defaultFileName = "snape.jpg";
-            defaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/snape.jpg";
-            ImageDto imageDto = new ImageDto(defaultImage, defaultFileName);
-            Image image = new Image(imageDto);
+            defaultFileName = "defaultImage.jpeg";
+            defaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/defaultImage.jpeg";
+
+            if(!image.getFilename().equals("defaultImage.jpeg")){
+                s3Uploader.deleteUserImage(image.getImageId());
+            }
+
+            image.setImageUrl(defaultImage);
+            image.setFilename(defaultFileName);
             imageRepository.save(image);
-            user.updateImage(image);
-            userRepository.save(user);
-            ProfileResponseDto profileResponseDto = new ProfileResponseDto(image);
+            ProfileResponseDto profileResponseDto = new ProfileResponseDto(user.getImage());
             return new ResponseEntity(profileResponseDto, HttpStatus.OK);
         }else {
-            User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
-            Image image = new Image(s3Uploader.upload(file, "ProfileImage"));
+            ImageDto imageDto = s3Uploader.upload(file, "ProfileImage");
+
+            if(!image.getFilename().equals("defaultImage.jpeg")){
+                s3Uploader.deleteUserImage(image.getImageId());
+            }
+            image.setImageUrl(imageDto.getImageUrl());
+            image.setFilename(imageDto.getFileName());
+
+//            Image image = new Image(s3Uploader.upload(file, "ProfileImage"));
+//            user.setImage(image1);
             imageRepository.save(image);
-            user.updateImage(image);
-            userRepository.save(user);
             ProfileResponseDto profileResponseDto = new ProfileResponseDto(image);
             return new ResponseEntity(profileResponseDto, HttpStatus.OK);
         }
@@ -147,10 +163,9 @@ public class UserService {
     //마이페이지 비밀번호 일치 확인 후 비밀번호 변경 모달창으로 이동
     public ResponseEntity passwordCheck(UserDetailsImpl userDetails, PasswordCheckRequestDto passwordCheckRequestDto) {
         String password = passwordCheckRequestDto.getPassword();
-        password = passwordEncoder.encode(password);
         if(password.equals("")) {
             throw new CustomException(ErrorCode.EMPTY_PASSWORD);
-        } else if(!password.equals(userDetails.getPassword())) {
+        } else if(!passwordEncoder.matches(password, userDetails.getPassword())){
             throw new CustomException(ErrorCode.PASSWORD_CHECK);
         }
         return new ResponseEntity("비밀번호 일치", HttpStatus.OK);

@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.team.unanimous.dto.ImageDto;
 import com.team.unanimous.repository.ImageRepository;
+import com.team.unanimous.repository.TeamImageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,7 @@ public class S3Uploader {
     private final AmazonS3Client amazonS3Client;
 //    private final PostImageRepository postImageRepository;
     private final ImageRepository imageRepository;
+    private final TeamImageRepository teamImageRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     public String bucket; // S3 버킷 이름
@@ -35,9 +37,16 @@ public class S3Uploader {
         return upload(uploadFile, dirName);
     }
 
-    //S3 삭제
+    //S3 삭제 user삭제
     public void deleteUserImage(Long imageId){
         String fileName = imageRepository.findById(imageId).orElseThrow(IllegalArgumentException::new).getFilename();
+
+        DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileName);
+        amazonS3Client.deleteObject(request);
+    }
+    //s3삭제 team삭제
+    public void deleteTeamImage(Long teamImageId){
+        String fileName = teamImageRepository.findById(teamImageId).orElseThrow(IllegalArgumentException::new).getFilename();
 
         DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileName);
         amazonS3Client.deleteObject(request);

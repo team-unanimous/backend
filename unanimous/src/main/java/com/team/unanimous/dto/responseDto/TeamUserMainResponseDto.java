@@ -22,7 +22,7 @@ public class TeamUserMainResponseDto {
         this.teamid = team.getId();
         this.teamname = team.getTeamname();
         this.uuid = team.getUuid();
-//        this.teamImage = teamImage;
+        this.teamImage = team.getTeamImage().getTeamImageUrl();
         this.user = nicknameResponseDtos;
     }
 }

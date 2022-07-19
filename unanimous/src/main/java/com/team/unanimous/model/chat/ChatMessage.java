@@ -50,6 +50,6 @@ public class ChatMessage extends Timestamped {
         this.nickname = chatMessageRequestDto.getNickname();
         this.sender = chatMessageRequestDto.getSender();
         this.message = chatMessageRequestDto.getMessage();
-        this.profileUrl = user.getUserImage();
+        this.profileUrl = user.getImage().getImageUrl();
     }
 }
