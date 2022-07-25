@@ -1,7 +1,6 @@
 package com.team.unanimous.controller;
 
 
-import com.team.unanimous.dto.requestDto.BanRequestDto;
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.TeamInviteRequestDto;
 import com.team.unanimous.dto.requestDto.TeamRequestDto;
@@ -85,19 +84,19 @@ public class TeamController {
     }
 
     // 팀원 강퇴
-    @DeleteMapping("/api/teams/{teamId}/ban")
+    @DeleteMapping("/api/teams/{teamId}/{userId}/ban")
     public ResponseEntity banUser(@PathVariable Long teamId,
-                                  @RequestBody BanRequestDto requestDto,
+                                  @PathVariable Long userId,
                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return teamService.banUser(teamId,requestDto,userDetails);
+        return teamService.banUser(teamId,userId,userDetails);
     }
 
     // 팀 탈퇴
-    @DeleteMapping("/api/teams/{teamId}/exit")
+    @DeleteMapping("/api/teams/{teamId}/{userId}/exit")
     public ResponseEntity exitTeam(@PathVariable Long teamId,
-                                  @RequestBody BanRequestDto requestDto,
+                                  @PathVariable Long userId,
                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return teamService.exitTeam(teamId,requestDto,userDetails);
+        return teamService.exitTeam(teamId,userId,userDetails);
     }
 
     // 팀장 위임

@@ -2,14 +2,15 @@ package com.team.unanimous.service;
 
 
 import com.team.unanimous.dto.ImageDto;
-import com.team.unanimous.dto.requestDto.BanRequestDto;
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.TeamInviteRequestDto;
 import com.team.unanimous.dto.requestDto.TeamRequestDto;
-import com.team.unanimous.dto.responseDto.*;
+import com.team.unanimous.dto.responseDto.NicknameResponseDto;
+import com.team.unanimous.dto.responseDto.TeamResponseDto;
+import com.team.unanimous.dto.responseDto.TeamUserMainResponseDto;
+import com.team.unanimous.dto.responseDto.TeamUserResponseDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
-import com.team.unanimous.model.Image;
 import com.team.unanimous.model.TeamImage;
 import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.team.TeamUser;
@@ -19,10 +20,8 @@ import com.team.unanimous.repository.team.TeamRepository;
 import com.team.unanimous.repository.team.TeamUserRepository;
 import com.team.unanimous.repository.user.UserRepository;
 import com.team.unanimous.security.UserDetailsImpl;
-//import com.team.unanimous.service.S3.S3Uploader;
 import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -232,10 +231,9 @@ public class TeamService {
 
     // 팀원 강퇴
     @Transactional
-    public ResponseEntity banUser(Long teamId, BanRequestDto requestDto,UserDetailsImpl userDetails){
-        String nickname = requestDto.getNickname();
+    public ResponseEntity banUser(Long teamId, Long userId,UserDetailsImpl userDetails){
         Team team = teamRepository.findTeamById(teamId);
-        User user = userRepository.findUserByNickname(nickname);
+        User user = userRepository.findUserById(userId);
         if (user == null){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
@@ -254,18 +252,15 @@ public class TeamService {
     // 팀 탈퇴
     @Transactional
     public ResponseEntity exitTeam(Long teamId,
-                                   BanRequestDto requestDto,
+                                   Long userId,
                                    UserDetailsImpl userDetails){
-        String nickname = requestDto.getNickname();
+
         Team team = teamRepository.findTeamById(teamId);
-        User user = userRepository.findUserByNickname(nickname);
+        User user = userRepository.findUserById(userId);
         if (user == null){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
-        if (!(team.getTeamManager().equals(userDetails.getUser().getNickname()))){
-            throw new CustomException(ErrorCode.INVALID_AUTHORITY);
-        }
-        if (nickname.equals(team.getTeamManager())){
+        if (user.getNickname().equals(team.getTeamManager())){
             throw new CustomException(ErrorCode.TEAM_MANAGER_CONFLICT);
         }
         TeamUser teamUser = teamUserRepository.findAllByTeamIdAndUserId(teamId, user.getId());
