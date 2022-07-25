@@ -215,7 +215,6 @@ public class TeamService {
     // 팀원 강퇴
     @Transactional
     public ResponseEntity banUser(Long teamId, Long userId,UserDetailsImpl userDetails){
-//        String nickname = requestDto.getNickname();
         Team team = teamRepository.findTeamById(teamId);
         User user = userRepository.findUserById(userId);
         if (user == null){
@@ -244,10 +243,6 @@ public class TeamService {
         if (user == null){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
-        //유효성 검사가 이상해서 주석처리함 (팀원확인필요)
-//        if (!(team.getTeamManager().equals(userDetails.getUser().getNickname()))){
-//            throw new CustomException(ErrorCode.INVALID_AUTHORITY);
-//        }
         if (user.getNickname().equals(team.getTeamManager())){
             throw new CustomException(ErrorCode.TEAM_MANAGER_CONFLICT);
         }

@@ -1,7 +1,5 @@
 package com.team.unanimous.controller;
 
-
-import com.team.unanimous.dto.requestDto.BanRequestDto;
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.TeamInviteRequestDto;
 import com.team.unanimous.dto.requestDto.TeamRequestDto;
