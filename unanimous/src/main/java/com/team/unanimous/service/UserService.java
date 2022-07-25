@@ -13,6 +13,9 @@ import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.ImageRepository;
 import com.team.unanimous.repository.user.UserRepository;
 import com.team.unanimous.security.UserDetailsImpl;
+import com.team.unanimous.security.jwt.HeaderTokenExtractor;
+import com.team.unanimous.security.jwt.JwtDecoder;
+import com.team.unanimous.security.jwt.JwtTokenUtils;
 import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
@@ -28,12 +32,14 @@ import java.util.regex.Pattern;
 // 생성자를 만드는 번거러움을 없앨 수 있다.
 @RequiredArgsConstructor
 public class UserService {
-
+    public static final String AUTH_HEADER = "Authorization";
+    public static final String TOKEN_TYPE = "BEARER";
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
     private final ImageRepository imageRepository;
     private final S3Uploader s3Uploader;
+    private final HeaderTokenExtractor extractor;
+    private final JwtDecoder jwtDecoder;
 
     //이메일 코드인증(수정필요)
     public ResponseEntity email(EmailRequestDto emailRequestDto){
@@ -110,17 +116,21 @@ public class UserService {
 
 
     // 마이페이지, 회원가입 닉네임 수정
-    public ResponseEntity nickname(Long userId, NicknameRequestDto nicknameRequestDto) {
+    public ResponseEntity nickname(Long userId, NicknameRequestDto nicknameRequestDto, HttpServletResponse response) {
         String nickname = nicknameRequestDto.getNickname();
         User user1 = userRepository.findById(userId).orElseThrow(
                 () -> new CustomException(ErrorCode.NOT_FOUND_USER));
         user1.setNickname(nickname);
         userRepository.save(user1);
+
+        String token = JwtTokenUtils.generaterefreshToken(user1);
+        response.addHeader(AUTH_HEADER, TOKEN_TYPE + " " + token);
+
         return new ResponseEntity("닉네임 저장완료", HttpStatus.OK);
     }
 
     // 마이페이지 s3이미지 업로드
-    public ResponseEntity signupImage(MultipartFile file, Long userId) throws IOException {
+    public ResponseEntity signupImage(MultipartFile file, Long userId, HttpServletResponse response) throws IOException {
         String defaultImage;
         String defaultFileName;
         User user = userRepository.findById(userId).orElseThrow(IllegalAccessError::new);
@@ -137,8 +147,12 @@ public class UserService {
             image.setImageUrl(defaultImage);
             image.setFilename(defaultFileName);
             imageRepository.save(image);
+
+            String token = JwtTokenUtils.generaterefreshToken(user);
+            response.addHeader(AUTH_HEADER, TOKEN_TYPE + " " + token);
+
             ProfileResponseDto profileResponseDto = new ProfileResponseDto(user.getImage());
-            return new ResponseEntity(profileResponseDto, HttpStatus.OK);
+            return new ResponseEntity(profileResponseDto,  HttpStatus.OK);
         }else {
             ImageDto imageDto = s3Uploader.upload(file, "ProfileImage");
 
@@ -148,9 +162,11 @@ public class UserService {
             image.setImageUrl(imageDto.getImageUrl());
             image.setFilename(imageDto.getFileName());
 
-//            Image image = new Image(s3Uploader.upload(file, "ProfileImage"));
-//            user.setImage(image1);
             imageRepository.save(image);
+
+            String token = JwtTokenUtils.generaterefreshToken(user);
+            response.addHeader(AUTH_HEADER, TOKEN_TYPE + " " + token);
+
             ProfileResponseDto profileResponseDto = new ProfileResponseDto(image);
             return new ResponseEntity(profileResponseDto, HttpStatus.OK);
         }
@@ -185,6 +201,26 @@ public class UserService {
 
         password = passwordEncoder.encode(password);
         User user = userRepository.findUserById(userDetails.getUser().getId());
+        user.setPassword(password);
+        userRepository.save(user);
+        return new ResponseEntity("비밀번호 변경 완료", HttpStatus.OK);
+    }
+
+    public ResponseEntity findPasswordChange(FindPasswordRequestDto findPasswordRequestDto) {
+        String username = findPasswordRequestDto.getUsername();
+        User user = userRepository.findUserByUsername(username);
+        String password = findPasswordRequestDto.getPassword();
+        String passwordCheck = findPasswordRequestDto.getPasswordCheck();
+         if(password.equals("")) {
+            throw new CustomException(ErrorCode.EMPTY_PASSWORD);
+        } else if(!password.equals(passwordCheck)) {
+            throw new CustomException(ErrorCode.PASSWORD_CHECK);
+        } else if(password.length() < 6 || password.length() > 12) {
+            throw new CustomException(ErrorCode.PASSWORD_LEGNTH);
+        } else if(!Pattern.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^*+=-]).{6,12}$", password)) {
+            throw new CustomException(ErrorCode.PASSWORD_WRONG);
+        }
+        password = passwordEncoder.encode(password);
         user.setPassword(password);
         userRepository.save(user);
         return new ResponseEntity("비밀번호 변경 완료", HttpStatus.OK);
