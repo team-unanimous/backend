@@ -5,6 +5,8 @@ import com.team.unanimous.exceptionHandler.ErrorCode;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.NoSuchElementException;
 
 @Component
 public class HeaderTokenExtractor {
@@ -30,6 +32,16 @@ public class HeaderTokenExtractor {
          * - Token 값이 존재하는 경우 -
          * (bearer ) 부분만 제거 후 token 값 반환
          */
+        return header.substring(
+                HEADER_PREFIX.length(),
+                header.length()
+        );
+    }
+    public String extract(String header) throws IOException {
+        if (header == null || header.equals("") || header.length() < HEADER_PREFIX.length()) {
+            throw new CustomException(ErrorCode.AUTH_TOKEN_NOT_FOUND);
+        }
+
         return header.substring(
                 HEADER_PREFIX.length(),
                 header.length()

@@ -191,7 +191,7 @@ public class EmailService {
 
     //비밀번호 찾기시 이메일 보내기
     public ResponseEntity passwordFind(EmailRequestDto emailRequestDto) {
-        User usernames = userRepository.findByUsername(emailRequestDto.getUsername()).orElse(null);
+         User usernames = userRepository.findByUsername(emailRequestDto.getUsername()).orElse(null);
          if(usernames == null){
              return ResponseEntity.badRequest().body("회원가입 되어있지 않은 이메일 입니다");
          }
