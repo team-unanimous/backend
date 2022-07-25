@@ -6,5 +6,5 @@ import java.util.List;
 
 @Getter
 public class TeamEmailRequestDto {
-    private List<EmailRequestDto> emailRequestDtoList;
+    private List<String> emailRequestDtoList;
 }

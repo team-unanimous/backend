@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 public class FormLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     public static final String AUTH_HEADER = "Authorization";
-
+    public static final String REFRESH_HEADER = "RefreshToken";
     public static final String TOKEN_TYPE = "BEARER";
 
 
@@ -19,9 +19,9 @@ public class FormLoginSuccessHandler extends SavedRequestAwareAuthenticationSucc
         final UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
 
         final String token = JwtTokenUtils.generateJwtToken(userDetails);
-        response.addHeader(AUTH_HEADER, TOKEN_TYPE + " " + token);
-        System.out.println(token);
+//        final String refreshToken = JwtTokenUtils.generaterefreshToken(user);
 
+        response.addHeader(AUTH_HEADER, TOKEN_TYPE + " " + token);
 
 //        //User nicakname 내려주기 - 동관 천재님꺼 참고
 //        response.setContentType("application/json");

@@ -1,6 +1,5 @@
 package com.team.unanimous.dto.responseDto;
 
-import com.team.unanimous.model.TeamImage;
 import com.team.unanimous.model.team.Team;
 import lombok.Getter;
 
@@ -16,12 +15,15 @@ public class TeamUserMainResponseDto {
     private String teamManager;
     private String teamImage;
 
+    private String teamManger;
+
     private String uuid;
     private List<NicknameResponseDto> user;
 
     public TeamUserMainResponseDto(Team team, List<NicknameResponseDto> nicknameResponseDtos) {
         this.teamid = team.getId();
         this.teamname = team.getTeamname();
+        this.teamManger = team.getTeamManager();
         this.uuid = team.getUuid();
         this.teamImage = team.getTeamImage().getTeamImageUrl();
         this.user = nicknameResponseDtos;

@@ -50,7 +50,8 @@ public class ChatRoomService {
         Meeting meeting = meetingRepository.findMeetingById(meetingId);
 
         ChatRoom chatRoom = ChatRoom.builder()
-                .chatRoomName(meeting.getMeetingTitle()+"의 회의룸")
+                .chatRoomName(meeting.getMeetingTitle())
+                .meetingId(meetingId)
                 .build();
         chatRoomRepository.save(chatRoom);
 

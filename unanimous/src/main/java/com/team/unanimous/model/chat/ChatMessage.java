@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class ChatMessage extends Timestamped {
 
     public enum MessageType {
-        ENTER, TALK, QUIT
+        ENTER, TALK, QUIT, ISSUE
     }
 
     @Id

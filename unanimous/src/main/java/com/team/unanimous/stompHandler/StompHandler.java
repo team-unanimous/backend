@@ -4,10 +4,12 @@ import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
 import com.team.unanimous.model.chat.ChatRoom;
 import com.team.unanimous.model.chat.ChatRoomUser;
+import com.team.unanimous.model.meeting.Meeting;
 import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.chat.ChatRoomRepository;
 import com.team.unanimous.repository.chat.ChatRoomUserRepository;
+import com.team.unanimous.repository.meeting.MeetingRepository;
 import com.team.unanimous.repository.meeting.MeetingUserRepository;
 import com.team.unanimous.repository.user.UserRepository;
 import com.team.unanimous.security.jwt.JwtDecoder;
@@ -39,6 +41,8 @@ public class StompHandler implements ChannelInterceptor {
 
     private final ChatRoomRepository chatRoomRepository;
 
+    private final MeetingRepository meetingRepository;
+
     //Controller에 가기전에 이곳을 먼저 들리게 된다. 그것이 인터셉터의 역할
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -63,6 +67,7 @@ public class StompHandler implements ChannelInterceptor {
             // header정보에서 구독 destination정보를 얻고, roomId를 추출한다.
             // roomId를 URL로 전송해주고 있어 추출 필요
             String roomId = chatMessageService.getRoomId(Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
+            System.out.println("룸아이디는"+roomId);
 //
 //            // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑해 놓는다.(나중에 특정 세션이 어떤 채팅방에 들어가 있는지 알기 위함)
 //            // sessionId는 현재들어와있는 유저를 확인하기 위함이다.
@@ -76,6 +81,12 @@ public class StompHandler implements ChannelInterceptor {
             String username = jwtDecoder.decodeUsername(jwtToken);
             User user = userRepository.findUserByUsername(username);
             ChatRoom chatRoom = chatRoomRepository.findChatRoomById(Long.valueOf(roomId));
+            System.out.println(chatRoom.getId());
+
+            Optional<ChatRoomUser> chatRoomUser1 = chatRoomUserRepository.findAllByUser_Id(user.getId());
+            if (chatRoomUser1.isPresent()){
+                chatRoomUserRepository.delete(chatRoomUser1.get());
+            }
 
             List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByChatRoom(chatRoom);
             if (chatRoomUsers.size() > 7){
@@ -96,13 +107,24 @@ public class StompHandler implements ChannelInterceptor {
             String sessionId = (String) message.getHeaders().get("simpSessionId");
             //나갈떄 redis 맵에서 roomId와 sessionId의 매핑을 끊어줘야 하기때문에 roomId찾고
             String roomId = chatRoomService.getUserEnterRoomId(sessionId);
+            System.out.println(roomId);
 
             String token = Optional.ofNullable(accessor.getFirstNativeHeader("token").substring(7)).orElse("UnknownUser");
             String username = jwtDecoder.decodeUsername(token);
             User user = userRepository.findUserByUsername(username);
-            chatRoomUserRepository.deleteByUser_Id(user.getId());
+            Optional<ChatRoomUser> chatRoomUser = chatRoomUserRepository.findAllByUser_Id(user.getId());
+            chatRoomUserRepository.delete(chatRoomUser.get());
+//            chatRoomUserRepository.deleteByUser_Id(user.getId());
+
+            ChatRoom chatRoom = chatRoomRepository.findChatRoomById(Long.valueOf(roomId));
+            Optional<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByChatRoom_Id(chatRoom.getId());
+            if (!(chatRoomUsers.isPresent())){
+                chatRoomRepository.delete(chatRoom);
+            }
+
             // 퇴장한 클라이언트의 roomId 맵핑 정보를 삭제한다.
             chatRoomService.removeUserEnterInfo(sessionId);
+
             log.info("DISCONNECT {}, {}", sessionId, roomId);
         }
         return message;

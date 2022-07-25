@@ -77,4 +77,16 @@ public class MeetingController {
                                         @AuthenticationPrincipal UserDetailsImpl userDetails){
         return meetingService.deleteMeeting(meetingId,userDetails);
     }
+
+    // 미팅 NOW로 전환
+    @PatchMapping("/api/meetings/{meetingId}/now")
+    public ResponseEntity changeMeetingNow(@PathVariable Long meetingId){
+        return meetingService.changeMeetingNow(meetingId);
+    }
+
+    // 미팅 DONE으로 전환
+    @PatchMapping("/api/meetings/{meetingId}/done")
+    public ResponseEntity changeMeetingDone(@PathVariable Long meetingId){
+        return meetingService.changeMeetingDone(meetingId);
+    }
 }
