@@ -291,4 +291,22 @@ public class MeetingService {
         meetingRepository.delete(meeting);
         return ResponseEntity.ok("미팅 삭제 완료");
     }
+
+    // 미팅 NOW로 전환
+    @Transactional
+    public ResponseEntity changeMeetingNow(Long meetingId) {
+        Meeting meeting = meetingRepository.findMeetingById(meetingId);
+        meeting.setMeetingStatus(Meeting.Status.NOW);
+        meetingRepository.save(meeting);
+        return ResponseEntity.ok("회의 시작");
+    }
+
+    // 미팅 DONE으로 전환
+    @Transactional
+    public ResponseEntity changeMeetingDone(Long meetingId){
+        Meeting meeting = meetingRepository.findMeetingById(meetingId);
+        meeting.setMeetingStatus(Meeting.Status.DONE);
+        meetingRepository.save(meeting);
+        return ResponseEntity.ok("회의 종료");
+    }
 }

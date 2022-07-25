@@ -2,10 +2,6 @@ package com.team.unanimous.service;
 
 
 import com.team.unanimous.dto.ImageDto;
-import com.team.unanimous.dto.requestDto.EmailRequestDto;
-import com.team.unanimous.dto.requestDto.NicknameRequestDto;
-import com.team.unanimous.dto.requestDto.PasswordRequestDto;
-import com.team.unanimous.dto.requestDto.SignupRequestDto;
 import com.team.unanimous.dto.requestDto.*;
 import com.team.unanimous.dto.responseDto.ProfileResponseDto;
 import com.team.unanimous.dto.responseDto.SignupResponseDto;
@@ -28,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.regex.Pattern;

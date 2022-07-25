@@ -1,17 +1,19 @@
 package com.team.unanimous.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.team.unanimous.dto.requestDto.NicknameRequestDto;
+import com.team.unanimous.dto.requestDto.PasswordCheckRequestDto;
+import com.team.unanimous.dto.requestDto.PasswordRequestDto;
+import com.team.unanimous.dto.requestDto.SignupRequestDto;
 import com.team.unanimous.dto.requestDto.*;
 import com.team.unanimous.security.UserDetailsImpl;
 import com.team.unanimous.service.UserService;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -20,8 +22,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class UserController extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    public static final String AUTH_HEADER = "Authorization";
-    public static final String TOKEN_TYPE = "BEARER";
     private final UserService userService;
 
     // 회원가입(이메일 코드 없는 버전)

@@ -50,6 +50,8 @@ public class IssueService {
             throw new CustomException(ErrorCode.MEETING_NOT_FOUND);
         }else if (!(meeting.getMeetingStatus() == Meeting.Status.YET)){
             throw new CustomException(ErrorCode.MEETING_HAS_DONE);
+        }else if (meeting.getMeetingIssue().size() > 9){
+            throw new CustomException(ErrorCode.MEETING_ISSUE_HAS_FULL);
         }
 
         Issue issue = Issue.builder()
@@ -80,6 +82,8 @@ public class IssueService {
             throw new CustomException(ErrorCode.MEETING_NOT_FOUND);
         }else if (!(meeting.getMeetingStatus() == Meeting.Status.NOW)){
             throw new CustomException(ErrorCode.MEETING_HAS_DONE);
+        }else if (meeting.getMeetingIssue().size() > 9){
+            throw new CustomException(ErrorCode.MEETING_ISSUE_HAS_FULL);
         }
 
         Issue issue = Issue.builder()
