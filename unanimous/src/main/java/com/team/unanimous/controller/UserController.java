@@ -1,7 +1,10 @@
 package com.team.unanimous.controller;
 
 
-import com.team.unanimous.dto.requestDto.*;
+import com.team.unanimous.dto.requestDto.NicknameRequestDto;
+import com.team.unanimous.dto.requestDto.PasswordCheckRequestDto;
+import com.team.unanimous.dto.requestDto.PasswordRequestDto;
+import com.team.unanimous.dto.requestDto.SignupRequestDto;
 import com.team.unanimous.security.UserDetailsImpl;
 import com.team.unanimous.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 
 @RestController
