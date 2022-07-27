@@ -31,4 +31,8 @@ public class Image{
     }
 
 
+    public Image(String imageUrl, Long id) {
+        this.imageUrl = imageUrl;
+        this.imageId = id;
+    }
 }
