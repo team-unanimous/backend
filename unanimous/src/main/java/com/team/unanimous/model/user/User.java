@@ -47,6 +47,9 @@ public class User {
     @Column
     private boolean isGoogle;
 
+    @Column
+    private String userImgUrl;
+
     @OneToOne
     @JoinColumn(name = "ImageId")
     private Image image;
@@ -75,6 +78,7 @@ public class User {
         this.password = password;
         this.image = image;
         this.isGoogle = isGoogle;
+        this.userImgUrl = image.getImageUrl();
     }
     public void updateImage(Image image){
         this.image = image;
