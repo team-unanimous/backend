@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ChatRoom extends Timestamped {
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
     @Column(name = "chat_room_id")
     private Long id;
 

@@ -50,6 +50,7 @@ public class ChatRoomService {
         Meeting meeting = meetingRepository.findMeetingById(meetingId);
 
         ChatRoom chatRoom = ChatRoom.builder()
+                .id(meetingId)
                 .chatRoomName(meeting.getMeetingTitle())
                 .meetingId(meetingId)
                 .build();

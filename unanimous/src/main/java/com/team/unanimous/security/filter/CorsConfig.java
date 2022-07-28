@@ -19,6 +19,8 @@ public class CorsConfig {//크로스 오리진 정책 설정
         config.addAllowedOrigin("http://52.79.226.242/");
         config.addAllowedOrigin("https://dkworld.shop");
         config.addAllowedOrigin("https://sparta-ysh.shop");
+        config.addAllowedOrigin("https://unanimous.co.kr");
+        config.addAllowedOrigin("http://unanimous.co.kr.s3-website.ap-northeast-2.amazonaws.com/");
         config.addAllowedOrigin("");//모든 ip에 응답을 허용
         config.setAllowCredentials(true);
         config.addAllowedHeader("*");//모든 헤더에 응답 허용

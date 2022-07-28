@@ -220,7 +220,7 @@ public class IssueService {
         Meeting meeting = meetingRepository.findMeetingById(meetingId);
 
         User user = userRepository.findUserById(userDetails.getUser().getId());
-        if (!(meeting.getMeetingCreator().equals(user.getNickname()))){
+        if (!(meeting.getMeetingCreator().getNickname().equals(user.getNickname()))){
             throw new CustomException(ErrorCode.INVALID_AUTHORITY);
         }
 

@@ -17,7 +17,7 @@ public class ChatMessageResponseDto {
     private String nickname;
     private String sender;
     private String message;
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     public ChatMessageResponseDto(ChatMessage chatMessage) {
         this.type = chatMessage.getType();

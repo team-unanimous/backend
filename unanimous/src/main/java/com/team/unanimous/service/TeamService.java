@@ -30,6 +30,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -59,8 +60,8 @@ public class TeamService {
         if (teamUserList.size()>4){
             throw new CustomException(ErrorCode.EXCESS_TEAM_NUMBER);
         }
-        TeamUser teamUser1 = teamUserRepository.findByTeam(team);
-        if (teamUser1.getUser().getId().equals(userDetails.getUser().getId())){
+        Optional<TeamUser> teamUser1 = teamUserRepository.findAllByTeamAndUser(team,user);
+        if (teamUser1.isPresent()){
             throw new CustomException(ErrorCode.DUPLICATE_TEAM_USER);
         }
         TeamUser teamuser = new TeamUser(user,team);
@@ -154,8 +155,8 @@ public class TeamService {
         if (teamUserList.size()>4){
             throw new CustomException(ErrorCode.EXCESS_TEAM_NUMBER);
         }
-        TeamUser teamUser1 = teamUserRepository.findByTeam(team);
-        if (teamUser1.getUser().getId().equals(userDetails.getUser().getId())){
+        Optional<TeamUser> teamUser1 = teamUserRepository.findAllByTeamAndUser(team,user);
+        if (teamUser1.isPresent()){
             throw new CustomException(ErrorCode.DUPLICATE_TEAM_USER);
         }
         TeamUser teamuser = new TeamUser(user,team);
