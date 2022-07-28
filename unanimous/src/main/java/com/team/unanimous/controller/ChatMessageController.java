@@ -46,12 +46,11 @@ public class ChatMessageController {
         Date date = cal.getTime();
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
         String dateResult = sdf.format(date);
-        messageRequestDto.setCreatedAt(dateResult);
 
         User user2 = userRepository.findUserByNickname(nickname);
 
         // DTO 로 채팅 메시지 객체 생성
-        ChatMessage chatMessage = new ChatMessage(messageRequestDto, user2);
+        ChatMessage chatMessage = new ChatMessage(messageRequestDto, user2, dateResult);
 
         // 웹소켓 통신으로 채팅방 토픽 구독자들에게 메시지 보내기
         chatMessageService.sendChatMessage(chatMessage);
