@@ -1,7 +1,5 @@
 package com.team.unanimous.security;
 
-
-
 import com.team.unanimous.security.filter.FormLoginFilter;
 import com.team.unanimous.security.filter.JwtAuthFilter;
 import com.team.unanimous.security.jwt.HeaderTokenExtractor;

@@ -1,13 +1,18 @@
 package com.team.unanimous.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.team.unanimous.Google.GoogleUserService;
 import com.team.unanimous.dto.requestDto.NicknameRequestDto;
 import com.team.unanimous.dto.requestDto.PasswordCheckRequestDto;
 import com.team.unanimous.dto.requestDto.PasswordRequestDto;
 import com.team.unanimous.dto.requestDto.SignupRequestDto;
 import com.team.unanimous.dto.requestDto.*;
+import com.team.unanimous.exceptionHandler.CustomException;
+import com.team.unanimous.exceptionHandler.ErrorCode;
 import com.team.unanimous.security.UserDetailsImpl;
 import com.team.unanimous.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -23,6 +28,8 @@ import java.io.IOException;
 public class UserController extends SavedRequestAwareAuthenticationSuccessHandler {
 
     private final UserService userService;
+
+    private final GoogleUserService googleUserService;
 
     // 회원가입(이메일 코드 없는 버전)
     @PostMapping("/api/users/signup")
@@ -69,5 +76,17 @@ public class UserController extends SavedRequestAwareAuthenticationSuccessHandle
                                       final HttpServletResponse response
                                       ) throws IOException {
         return userService.signupImage(file, userId, response);
+    }
+
+    // 구글 로그인
+    @GetMapping("/login/google/callback")
+    public ResponseEntity googleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+        try {
+            System.out.println("시작확인");
+            googleUserService.googleLogin(code, response);
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.INVALID_LOGIN_ATTEMPT);
+        }
+        return new ResponseEntity("구글 사용자로 로그인 처리 되었습니다", HttpStatus.OK);
     }
 }
