@@ -4,10 +4,12 @@ import com.team.unanimous.dto.requestDto.MeetingRequestDto;
 import com.team.unanimous.dto.responseDto.MeetingResponseDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
+import com.team.unanimous.model.chat.ChatRoom;
 import com.team.unanimous.model.meeting.Meeting;
 import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.user.User;
+import com.team.unanimous.repository.chat.ChatRoomRepository;
 import com.team.unanimous.repository.meeting.MeetingRepository;
 import com.team.unanimous.repository.meeting.MeetingUserRepository;
 import com.team.unanimous.repository.team.TeamRepository;
@@ -33,6 +35,8 @@ public class MeetingService {
     private final MeetingRepository meetingRepository;
 
     private final MeetingUserRepository meetingUserRepository;
+
+    private final ChatRoomRepository chatRoomRepository;
 
     // 미팅 예약하기 생성
     @Transactional
@@ -101,6 +105,13 @@ public class MeetingService {
 
         meetingUserRepository.save(meetingUser);
         Long meetingId = meeting.getId();
+
+        ChatRoom chatRoom = ChatRoom.builder()
+                .id(meetingId)
+                .chatRoomName(meeting.getMeetingTitle())
+                .meetingId(meetingId)
+                .build();
+        chatRoomRepository.save(chatRoom);
         return ResponseEntity.ok(meetingId);
     }
 
@@ -144,6 +155,13 @@ public class MeetingService {
         meetingUserRepository.save(meetingUser);
 
         Long meetingId = meeting.getId();
+
+        ChatRoom chatRoom = ChatRoom.builder()
+                .id(meetingId)
+                .chatRoomName(meeting.getMeetingTitle())
+                .meetingId(meetingId)
+                .build();
+        chatRoomRepository.save(chatRoom);
         return ResponseEntity.ok(meetingId);
     }
 

@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.Console;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,8 +93,8 @@ public class TeamService {
             throw new CustomException(ErrorCode.TEAM_NAME_LENGTH);
         }
 
-        String teamDefaultFileName = "teamDefaultImage.png";
-        String teamDefaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/teamDefaultImage.png";
+        String teamDefaultFileName = "teamDefaultImageR1.png";
+        String teamDefaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/teamDefaultImageR1.png";
         ImageDto imageDto = new ImageDto(teamDefaultImage, teamDefaultFileName);
         TeamImage teamImage = new TeamImage(imageDto);
         teamImageRepository.save(teamImage);
@@ -277,9 +276,9 @@ public class TeamService {
         Team team = teamRepository.findTeamById(teamId);
         TeamImage teamImage = teamImageRepository.findByTeamImageId(team.getTeamImage().getTeamImageId());
         if(multipartFile.isEmpty()){
-            String teamDefaultFileName = "teamDefaultImage.png";
-            String teamDefaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/teamDefaultImage.png";
-            if(!teamImage.getFilename().equals("teamDefaultImage.png")){
+            String teamDefaultFileName = "teamDefaultImageR1.png";
+            String teamDefaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/teamDefaultImageR1.png";
+            if(!teamImage.getFilename().equals("teamDefaultImageR1.png")){
                 s3Uploader.deleteTeamImage(teamImage.getTeamImageId());
             }
 
@@ -287,7 +286,7 @@ public class TeamService {
             teamImage.setFilename(teamDefaultFileName);
         }else {
             ImageDto imageDto = s3Uploader.upload(multipartFile, "TeamProfileImage");
-            if(!teamImage.getFilename().equals("teamDefaultImage.png")){
+            if(!teamImage.getFilename().equals("teamDefaultImageR1.png")){
                 s3Uploader.deleteTeamImage(teamImage.getTeamImageId());
             }
             teamImage.setTeamImageUrl(imageDto.getImageUrl());
