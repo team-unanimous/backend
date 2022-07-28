@@ -33,16 +33,16 @@ public class ChatMessageService {
     // 채팅방에 메시지 발송
     public void sendChatMessage(ChatMessage chatMessage) {
         User user = userRepository.findUserByNickname(chatMessage.getNickname());
-        // 회의 입장
-        if (ChatMessage.MessageType.ENTER.equals(chatMessage.getType())) {
-            chatMessage.setMessage(user.getNickname() + "님이 방에 입장했습니다.");
+        // 도장 직기
+        if (ChatMessage.MessageType.STAMP.equals(chatMessage.getType())) {
+            chatMessage.setMessage(chatMessage.getMessage());
             chatMessage.setSender("[알림]");
             ChatMessageResponseDto chatMessageEnterResponseDto = new ChatMessageResponseDto(chatMessage);
             redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageEnterResponseDto);
         }
-        // 회의 퇴장
-        if (ChatMessage.MessageType.QUIT.equals(chatMessage.getType())) {
-            chatMessage.setMessage(user.getNickname() + "님이 회의에서 나갔습니다.");
+        // 회의록 작성
+        if (ChatMessage.MessageType.RESULT.equals(chatMessage.getType())) {
+            chatMessage.setMessage(chatMessage.getMessage());
             chatMessage.setSender("[알림]");
             ChatMessageResponseDto chatMessageEnterResponseDto = new ChatMessageResponseDto(chatMessage);
             redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessageEnterResponseDto);
