@@ -225,9 +225,13 @@ public class IssueService {
         }
 
         Issue issue = issueRepository.findIssueById(issueId);
+        if (issue == null){
+            throw new CustomException(ErrorCode.ISSUE_NOT_FOUND);
+        }
 
         issue.writeResult(requestDto);
         issueRepository.save(issue);
-        return ResponseEntity.ok("결과 작성 완료");
+        List<Issue> issues = issueRepository.findAllByMeeting(meeting);
+        return ResponseEntity.ok(issues);
     }
 }

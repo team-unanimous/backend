@@ -33,6 +33,12 @@ public class ChatRoomController {
         return result;
     }
 
+    // 채팅방 나가기
+    @PostMapping("/meetings/{meetingId}/rooms/exit")
+    public ResponseEntity exitRoom(@PathVariable Long meetingId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return chatRoomService.exitRoom(meetingId, userDetails);
+    }
+
     // 채팅방 상세 조회
     @GetMapping("/rooms/{roomId}")
     public ChatRoomResponseDto getEachChatRoom(@PathVariable Long roomId, @AuthenticationPrincipal UserDetailsImpl userDetails) {

@@ -71,7 +71,7 @@ public class UserController extends SavedRequestAwareAuthenticationSuccessHandle
 
    // 마이페이지 프로필 사진 변경
     @PostMapping("/api/users/signup/{userId}")
-    public ResponseEntity signupImage(@RequestParam("profileImage") MultipartFile file,
+    public ResponseEntity signupImage(@RequestParam(value = "profileImage",required = false) MultipartFile file,
                                       @PathVariable Long userId,
                                       final HttpServletResponse response
                                       ) throws IOException {
