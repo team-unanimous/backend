@@ -136,6 +136,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 소켓 통신
         skipPathList.add("GET,/ws-stomp/**/**");
         skipPathList.add("GET,/ws-stomp/**");
+        //무중단 healthCheck
+        skipPathList.add("GET,/");
+        skipPathList.add("GET,/health");
         FilterSkipMatcher matcher = new FilterSkipMatcher(
                 skipPathList,
                 "/**"
