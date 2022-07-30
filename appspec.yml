@@ -8,8 +8,8 @@ files:
 permissions:
   - object: /
     pattern: "**"
-    owner: ubuntu
-    group: ubuntu
+    owner: root
+    group: root
     
 ### 새로 추가한 부분 ###
 hooks:
