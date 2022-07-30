@@ -50,7 +50,7 @@ public class TeamService {
     public ResponseEntity joinUnanimous(UserDetailsImpl userDetails){
 //        String teamname = "Unanimous";
 //        Team team = teamRepository.findTeamByTeamname(teamname);
-        Team team = teamRepository.findTeamById(1L);
+        Team team = teamRepository.findTeamById(2L);
         if (team == null){
             throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
         }

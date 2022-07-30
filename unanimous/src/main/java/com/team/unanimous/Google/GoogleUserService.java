@@ -89,8 +89,7 @@ public class GoogleUserService {
         body.add("client_id" , googleClientId); // 리액트
         body.add("client_secret", googleClientSecret);  // 리액트
         body.add("code", code);
-//        body.add("redirect_uri", "https://shayangju.shop/login/google/callback"); // 리액트 (local)
-        body.add("redirect_uri", "http://localhost:3000/login/google/callback"); // 리액트 (서버 배포 후)
+        body.add("redirect_uri", "https://unanimous.co.kr/login/google/callback"); // 리액트 (서버 배포 후)
         body.add("grant_type", "authorization_code");
 
         // POST 요청 보내기

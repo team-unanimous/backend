@@ -13,8 +13,6 @@ import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.ImageRepository;
 import com.team.unanimous.repository.user.UserRepository;
 import com.team.unanimous.security.UserDetailsImpl;
-import com.team.unanimous.security.jwt.HeaderTokenExtractor;
-import com.team.unanimous.security.jwt.JwtDecoder;
 import com.team.unanimous.security.jwt.JwtTokenUtils;
 import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;

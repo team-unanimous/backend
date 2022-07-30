@@ -1,14 +1,13 @@
 package com.team.unanimous.service;
 
-import com.team.unanimous.dto.requestDto.ChatRoomRequestDto;
 import com.team.unanimous.dto.responseDto.ChatRoomResponseDto;
 import com.team.unanimous.dto.responseDto.NicknameResponseDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
+import com.team.unanimous.model.Image;
 import com.team.unanimous.model.chat.ChatRoom;
 import com.team.unanimous.model.chat.ChatRoomUser;
 import com.team.unanimous.model.meeting.Meeting;
-import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.chat.ChatRoomRepository;
 import com.team.unanimous.repository.chat.ChatRoomUserRepository;
@@ -21,10 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -59,6 +56,17 @@ public class ChatRoomService {
         return chatRoom.getId();
     }
 
+    // 채팅방 나가기
+    public ResponseEntity exitRoom(Long meetingId,
+                                   UserDetailsImpl userDetails){
+        List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByUser_IdAndChatRoomId(userDetails.getUser().getId(),meetingId);
+        for (int i = 0; i < chatRoomUsers.size(); i++){
+            ChatRoomUser chatRoomUser = chatRoomUsers.get(i);
+            chatRoomUserRepository.delete(chatRoomUser);
+        }
+        return ResponseEntity.ok("퇴장 완료");
+    }
+
     // 개별 채팅방 조회
     public ChatRoomResponseDto getEachChatRoom(Long roomId, UserDetailsImpl userDetails) {
         if (!(userRepository.findByUsername(userDetails.getUsername()).isPresent())){
@@ -72,7 +80,8 @@ public class ChatRoomService {
         List<NicknameResponseDto> nicknameResponseDtos = new ArrayList<>();
         for (ChatRoomUser chatRoomUser : chatRoomUsers){
             User user = chatRoomUser.getUser();
-            NicknameResponseDto nicknameResponseDto = new NicknameResponseDto(user);
+            Image image = user.getImage();
+            NicknameResponseDto nicknameResponseDto = new NicknameResponseDto(user,image);
             nicknameResponseDtos.add(nicknameResponseDto);
         }
 
