@@ -86,7 +86,7 @@ public class EmailService {
             Message mimeMessage = new MimeMessage(session);
             mimeMessage.setFrom(new InternetAddress(email, nickName));        // 별명 설정
             mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(emailRequestDto.getUsername()));
-            mimeMessage.setSubject("제목");
+            mimeMessage.setSubject("Unanimous에서 보내는 메일");
             mimeMessage.setText(new StringBuffer().append("안녕하세요! Unanimous 입니다.")
                     .append("\n").append("홈페이지로 돌아가서 이메일 인증코드를 입력해주세요.")
                     .append("\n")
@@ -149,7 +149,7 @@ public class EmailService {
                 Message mimeMessage = new MimeMessage(session);
                 mimeMessage.setFrom(new InternetAddress(email, nickName));        // 별명 설정
                 mimeMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(username));
-                mimeMessage.setSubject("Unanimous 에서 인증번호 발송");
+                mimeMessage.setSubject("Unanimous에서 보내는 메일");
                 mimeMessage.setText(new StringBuffer().append("안녕하세요! Unanimous 입니다.")
                         .append("\n").append("팀에 초대 되었습니다.")
                         .append("\n").append("홈페이지로 돌아가서 팀참가 코드 를 입력해주세요.")
