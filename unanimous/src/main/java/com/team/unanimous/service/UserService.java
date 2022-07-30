@@ -154,7 +154,7 @@ public class UserService {
         }else {
             ImageDto imageDto = s3Uploader.upload(file, "ProfileImage");
 
-            if(!image.getFilename().equals("defaultImage.png")){
+            if(!image.getFilename().equals("defaultImageR1.png")){
                 s3Uploader.deleteUserImage(image.getImageId());
             }
             image.setImageUrl(imageDto.getImageUrl());

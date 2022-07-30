@@ -17,4 +17,5 @@ public class NicknameResponseDto {
         this.nickname = user.getNickname();
         this.username = user.getUsername();
     }
+
 }
