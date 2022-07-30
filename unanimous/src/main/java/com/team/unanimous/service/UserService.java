@@ -13,8 +13,6 @@ import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.ImageRepository;
 import com.team.unanimous.repository.user.UserRepository;
 import com.team.unanimous.security.UserDetailsImpl;
-import com.team.unanimous.security.jwt.HeaderTokenExtractor;
-import com.team.unanimous.security.jwt.JwtDecoder;
 import com.team.unanimous.security.jwt.JwtTokenUtils;
 import com.team.unanimous.service.S3.S3Uploader;
 import lombok.RequiredArgsConstructor;
@@ -63,8 +61,8 @@ public class UserService {
         String password = signupRequestDto.getPassword();
         String passwordCheck = signupRequestDto.getPasswordCheck();
         String nickname = "게스트";
-        String defaultFileName = "defaultImage.jpeg";
-        String defaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/defaultImage.jpeg";
+        String defaultFileName = "defaultImageR1.png";
+        String defaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/defaultImageR1.png";
 
         boolean isGoogle = false;
         // 아아디 정규식 맞지않는 경우 오류메세지를 전달해준다.
@@ -135,10 +133,10 @@ public class UserService {
         Image image = imageRepository.findByImageId(user.getImage().getImageId());
 
         if(file.isEmpty()){
-            defaultFileName = "defaultImage.jpeg";
-            defaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/defaultImage.jpeg";
+            defaultFileName = "defaultImageR1.png";
+            defaultImage = "https://s3-unanimous.s3.ap-northeast-2.amazonaws.com/defaultImageR1.png";
 
-            if(!image.getFilename().equals("defaultImage.jpeg")){
+            if(!image.getFilename().equals(defaultImage)){
                 s3Uploader.deleteUserImage(image.getImageId());
             }
 
@@ -154,7 +152,7 @@ public class UserService {
         }else {
             ImageDto imageDto = s3Uploader.upload(file, "ProfileImage");
 
-            if(!image.getFilename().equals("defaultImage.jpeg")){
+            if(!image.getFilename().equals("defaultImageR1.png")){
                 s3Uploader.deleteUserImage(image.getImageId());
             }
             image.setImageUrl(imageDto.getImageUrl());

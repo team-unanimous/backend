@@ -10,4 +10,6 @@ public interface IssueRepository extends JpaRepository<Issue,Long> {
 
     Issue findIssueById(Long issueId);
 
+    List<Issue> findAllByMeeting(Meeting meeting);
+
 }

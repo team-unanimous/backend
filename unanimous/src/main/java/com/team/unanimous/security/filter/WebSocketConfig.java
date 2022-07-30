@@ -6,10 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.*;
 
 @Slf4j
 @Configuration
@@ -35,9 +32,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         WebSocketMessageBrokerConfigurer.super.registerStompEndpoints(registry);
         registry.addEndpoint("/ws-stomp") // url/chatting 웹 소켓 연결 주소
                 .setAllowedOriginPatterns("*")
-                .withSockJS() // sock.js를 통하여 낮은 버전의 브라우저에서도 websocket 이 동작할수 있게 한다
-                //연결상태 주기 확인
-                .setHeartbeatTime(2000);
+                .withSockJS(); // sock.js를 통하여 낮은 버전의 브라우저에서도 websocket 이 동작할수 있게 한다
     }
 
     // StompHandler 인터셉터 설정
@@ -45,5 +40,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(stompHandler);
+    }
+
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+        registration.setMessageSizeLimit(160 * 64 * 1024); // default : 64 * 1024
+        registration.setSendTimeLimit(100 * 10000); // default : 10 * 10000 60 * 10000 * 6
+        registration.setSendBufferSizeLimit(3* 512 * 1024); // default : 512 * 1024
     }
 }
