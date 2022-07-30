@@ -83,9 +83,15 @@ public class StompHandler implements ChannelInterceptor {
             ChatRoom chatRoom = chatRoomRepository.findChatRoomById(Long.valueOf(roomId));
             System.out.println(chatRoom.getId());
 
-            Optional<ChatRoomUser> chatRoomUser1 = chatRoomUserRepository.findAllByUser_Id(user.getId());
-            if (chatRoomUser1.isPresent()){
-                chatRoomUserRepository.delete(chatRoomUser1.get());
+//            Optional<ChatRoomUser> chatRoomUser1 = chatRoomUserRepository.findAllByUser_Id(user.getId());
+//            if (chatRoomUser1.isPresent()){
+//                chatRoomUserRepository.delete(chatRoomUser1.get());
+//            }
+
+            List<ChatRoomUser> chatRoomUsers1 = chatRoomUserRepository.findAllByUser_Id(user.getId());
+            for (int i = 0; i < chatRoomUsers1.size(); i++){
+                ChatRoomUser chatRoomUser = chatRoomUsers1.get(i);
+                chatRoomUserRepository.delete(chatRoomUser);
             }
 
             List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByChatRoom(chatRoom);
@@ -95,7 +101,13 @@ public class StompHandler implements ChannelInterceptor {
 
             ChatRoomUser chatRoomUser = new ChatRoomUser(user,chatRoom);
             chatRoomUserRepository.save(chatRoomUser);
-
+            List<ChatRoomUser> chatRoomUsers2 = chatRoomUserRepository.findAllByUser_Id(user.getId());
+            for (int i = 0; i < chatRoomUsers2.size(); i++){
+                if (chatRoomUsers2.size() != 1){
+                    ChatRoomUser chatRoomUser1 = chatRoomUsers2.get(0);
+                    chatRoomUserRepository.delete(chatRoomUser1);
+                }
+            }
             log.info("SUBSCRIBED {}, {}", username, roomId);
         }
 
@@ -112,8 +124,11 @@ public class StompHandler implements ChannelInterceptor {
             String token = Optional.ofNullable(accessor.getFirstNativeHeader("token").substring(7)).orElse("UnknownUser");
             String username = jwtDecoder.decodeUsername(token);
             User user = userRepository.findUserByUsername(username);
-            Optional<ChatRoomUser> chatRoomUser = chatRoomUserRepository.findAllByUser_Id(user.getId());
-            chatRoomUserRepository.delete(chatRoomUser.get());
+            List<ChatRoomUser> chatRoomUsers1 = chatRoomUserRepository.findAllByUser_Id(user.getId());
+            for (int i = 0; i < chatRoomUsers1.size(); i++){
+                ChatRoomUser chatRoomUser = chatRoomUsers1.get(i);
+                chatRoomUserRepository.delete(chatRoomUser);
+            }
 //            chatRoomUserRepository.deleteByUser_Id(user.getId());
 
             ChatRoom chatRoom = chatRoomRepository.findChatRoomById(Long.valueOf(roomId));

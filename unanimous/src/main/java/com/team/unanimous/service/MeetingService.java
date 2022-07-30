@@ -2,14 +2,18 @@ package com.team.unanimous.service;
 
 import com.team.unanimous.dto.requestDto.MeetingRequestDto;
 import com.team.unanimous.dto.responseDto.MeetingResponseDto;
+import com.team.unanimous.dto.responseDto.NicknameResponseDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
+import com.team.unanimous.model.Image;
 import com.team.unanimous.model.chat.ChatRoom;
+import com.team.unanimous.model.chat.ChatRoomUser;
 import com.team.unanimous.model.meeting.Meeting;
 import com.team.unanimous.model.meeting.MeetingUser;
 import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.user.User;
 import com.team.unanimous.repository.chat.ChatRoomRepository;
+import com.team.unanimous.repository.chat.ChatRoomUserRepository;
 import com.team.unanimous.repository.meeting.MeetingRepository;
 import com.team.unanimous.repository.meeting.MeetingUserRepository;
 import com.team.unanimous.repository.team.TeamRepository;
@@ -20,9 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +40,8 @@ public class MeetingService {
     private final MeetingUserRepository meetingUserRepository;
 
     private final ChatRoomRepository chatRoomRepository;
+
+    private final ChatRoomUserRepository chatRoomUserRepository;
 
     // 미팅 예약하기 생성
     @Transactional
@@ -56,11 +61,47 @@ public class MeetingService {
         String meetingDate = meetingRequestDto.getMeetingDate();
         String meetingTime = meetingRequestDto.getMeetingTime();
         String meetingDuration = meetingRequestDto.getMeetingDuration();
+
+        // 미팅 생성 시간 삽입
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm");
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+        String dateResult = sdf.format(date);
+
+        if (meetingDate.equals("")){
+            meetingDate = dateResult.split(" ")[0];
+            meetingDuration = "1시간";
+        } else if (meetingDate == null){
+            meetingDate = dateResult.split(" ")[0];
+            meetingDuration = "1시간";
+        } else if (meetingDate.isEmpty()){
+            meetingDate = dateResult.split(" ")[0];
+            meetingDuration = "1시간";
+        } else if (meetingDate.equals("string")){
+            meetingDate = dateResult.split(" ")[0];
+            meetingDuration = "1시간";
+        }
+        if (meetingTime.equals("")){
+            meetingTime = dateResult.split(" ")[1];
+            meetingDuration = "1시간";
+        } else if (meetingTime == null){
+            meetingTime = dateResult.split(" ")[1];
+            meetingDuration = "1시간";
+        } else if (meetingTime.isEmpty()){
+            meetingTime = dateResult.split(" ")[1];
+            meetingDuration = "1시간";
+        } else if (meetingTime.equals("string")){
+            meetingTime = dateResult.split(" ")[1];
+            meetingDuration = "1시간";
+        }
+
         String[] meetingTime1 = meetingTime.split(":");
         String[] meetingDuration1 = meetingDuration.split("시");
         String meetingTime2 = meetingTime1[0];
         String meetingDuration2 = meetingDuration1[0];
         String meetingOverTime1 = "";
+
 
         int meetingTimeInt = Integer.parseInt(meetingTime2);
         int meetingDurationInt = Integer.parseInt(meetingDuration2);
@@ -71,9 +112,9 @@ public class MeetingService {
         }
 
         if (meetingOverTime < 10){
-            meetingOverTime1 = "0"+meetingOverTime+":00";
+            meetingOverTime1 = "0"+meetingOverTime+":"+meetingTime1[1];
         } else {
-            meetingOverTime1 = meetingOverTime+":00";
+            meetingOverTime1 = meetingOverTime+":"+meetingTime1[1];
         }
 
 
@@ -139,11 +180,21 @@ public class MeetingService {
             throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
         }
 
+        // 미팅 생성 시간 삽입
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm");
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+        String dateResult = sdf.format(date);
+
+        String meetingDate = dateResult.split(" ")[0];
+        String meetingTime = dateResult.split(" ")[1];
+
         Meeting meeting = Meeting.builder()
                 .meetingStatus(Meeting.Status.NOW)
                 .meetingTitle(meetingTitle)
-                .meetingDate(meetingRequestDto.getMeetingDate())
-                .meetingTime(meetingRequestDto.getMeetingTime())
+                .meetingDate(meetingDate)
+                .meetingTime(meetingTime)
                 .meetingSum(meetingRequestDto.getMeetingSum())
                 .meetingTheme(meetingRequestDto.getMeetingTheme())
                 .meetingCreator(user)
@@ -210,13 +261,20 @@ public class MeetingService {
                 meetingList1.add(meeting);
             }
         }
-
-
         List<MeetingResponseDto> meetingResponseDtos = new ArrayList<>();
         for (Meeting meeting : meetingList1){
             if (meeting.getMeetingStatus().equals(Meeting.Status.NOW)) {
                 User user = meeting.getMeetingCreator();
-                MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting,user);
+                List<ChatRoomUser> chatRoomUsers = chatRoomUserRepository.findAllByChatRoomId(meeting.getId());
+                int userCnt = chatRoomUsers.size();
+                List<NicknameResponseDto> nicknameResponseDtos = new ArrayList<>();
+                for (int i = 0; i < chatRoomUsers.size(); i++){
+                    User user1 = chatRoomUsers.get(i).getUser();
+                    Image image = user1.getImage();
+                    NicknameResponseDto nicknameResponseDto = new NicknameResponseDto(user1,image);
+                    nicknameResponseDtos.add(nicknameResponseDto);
+                }
+                MeetingResponseDto meetingResponseDto = new MeetingResponseDto(meeting,user,nicknameResponseDtos,userCnt);
                 meetingResponseDtos.add(meetingResponseDto);
             }
         }
@@ -326,6 +384,15 @@ public class MeetingService {
     public ResponseEntity changeMeetingDone(Long meetingId){
         Meeting meeting = meetingRepository.findMeetingById(meetingId);
         meeting.setMeetingStatus(Meeting.Status.DONE);
+
+        // 미팅 생성 시간 삽입
+        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm");
+        Calendar cal = Calendar.getInstance();
+        Date date = cal.getTime();
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+        String dateResult = sdf.format(date);
+        String meetingOverTime = dateResult.split(" ")[1];
+        meeting.setMeetingOverTime(meetingOverTime);
         meetingRepository.save(meeting);
         return ResponseEntity.ok("회의 종료");
     }
