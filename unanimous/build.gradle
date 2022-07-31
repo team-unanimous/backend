@@ -65,8 +65,8 @@ dependencies {
 
     //테스트 코드에 롬복 사용하는 의존성
     testAnnotationProcessor 'org.projectlombok:lombok'
-    //무중단 배포를 위한 의존성 추가
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+
 
 }
 
