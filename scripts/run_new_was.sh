@@ -23,6 +23,6 @@ if [ ! -z ${TARGET_PID} ]; then
 fi
 
 chmod -R 777 /home/ubuntu/unanimous
-nohup java -jar -Dserver.port=${TARGET_PORT} /unanimous/unanimous/build/libs/unanimous-0.0.1-SNAPSHOT.jar > /home/ubuntu/nohup.out 2>&1 &
+nohup java -jar -Dserver.port=${TARGET_PORT} /home/ubuntu/unanimous/unanimous/build/libs/unanimous-0.0.1-SNAPSHOT.jar > /home/ubuntu/nohup.out 2>&1 &
 echo "> Now new WAS runs at ${TARGET_PORT}."
 exit 0
