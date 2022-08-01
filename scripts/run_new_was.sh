@@ -21,7 +21,9 @@ if [ ! -z ${TARGET_PID} ]; then
   echo "> Kill WAS running at ${TARGET_PORT}."
   sudo kill ${TARGET_PID}
 fi
-
-nohup java -jar -Dserver.port=${TARGET_PORT} /home/ubuntu/unanimous/build/libs/* > /home/ubuntu/nohup.out 2>&1 &
+JAR_NAME=$(ls -tr /home/ubuntu/unanimous/build/libs/*.jar | tail -n 1)
+echo "> JAR Name: $JAR_NAME"
+chmod +x $JAR_NAME
+nohup java -jar -Dserver.port=${TARGET_PORT} $JAR_NAME > /home/ubuntu/nohup.out 2>&1 &
 echo "> Now new WAS runs at ${TARGET_PORT}."
 exit 0
