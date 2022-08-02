@@ -29,7 +29,7 @@ public class Team {
     private String uuid;
 
     @Column(nullable = false)
-    private String teamManager;
+    private Long teamManager;
 
     @OneToOne
     @JoinColumn(name = "teamImageId")

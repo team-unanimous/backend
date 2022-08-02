@@ -11,6 +11,7 @@ import com.team.unanimous.dto.responseDto.TeamUserMainResponseDto;
 import com.team.unanimous.dto.responseDto.TeamUserResponseDto;
 import com.team.unanimous.exceptionHandler.CustomException;
 import com.team.unanimous.exceptionHandler.ErrorCode;
+import com.team.unanimous.model.Image;
 import com.team.unanimous.model.TeamImage;
 import com.team.unanimous.model.team.Team;
 import com.team.unanimous.model.team.TeamUser;
@@ -50,7 +51,7 @@ public class TeamService {
     public ResponseEntity joinUnanimous(UserDetailsImpl userDetails){
 //        String teamname = "Unanimous";
 //        Team team = teamRepository.findTeamByTeamname(teamname);
-        Team team = teamRepository.findTeamById(2L);
+        Team team = teamRepository.findTeamById(1L);
         if (team == null){
             throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
         }
@@ -102,7 +103,7 @@ public class TeamService {
         Team team = Team.builder()
                 .teamname(teamname)
                 .uuid(UUID.randomUUID().toString())
-                .teamManager(userDetails.getUser().getNickname())
+                .teamManager(userDetails.getUser().getId())
                 .teamImage(teamImage)
                 .build();
         teamRepository.save(team);
@@ -173,11 +174,14 @@ public class TeamService {
         List<TeamUser> teamUserList = teamUserRepository.findAllByTeam(team);
         List<NicknameResponseDto> nicknameResponseDtos = new ArrayList<>();
         for (TeamUser teamUser : teamUserList){
-            NicknameResponseDto nicknameResponseDto = new NicknameResponseDto(teamUser.getUser());
+            User user = teamUser.getUser();
+            Image image = user.getImage();
+            NicknameResponseDto nicknameResponseDto = new NicknameResponseDto(user,image);
             nicknameResponseDtos.add(nicknameResponseDto);
         }
+        User user = userRepository.findUserById(team.getTeamManager());
 
-        TeamUserMainResponseDto teamUserMainResponseDto = new TeamUserMainResponseDto(team,nicknameResponseDtos);
+        TeamUserMainResponseDto teamUserMainResponseDto = new TeamUserMainResponseDto(team,user.getNickname(),nicknameResponseDtos);
         return teamUserMainResponseDto;
     }
 
@@ -189,7 +193,7 @@ public class TeamService {
         if (team == null){
             throw new CustomException(ErrorCode.TEAM_NOT_FOUND);
         }
-        if (!(userDetails.getUser().getNickname().equals(team.getTeamManager()))){
+        if (!(userDetails.getUser().getId().equals(team.getTeamManager()))){
             throw new CustomException(ErrorCode.TEAM_MANAGER_CONFLICT);
         }
 //        TeamImage teamImage = new TeamImage(s3Uploader.upload(multipartFile, "teamImage"));
@@ -220,10 +224,10 @@ public class TeamService {
         if (user == null){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
-        if (!(userDetails.getUser().getNickname().equals(team.getTeamManager()))){
+        if (!(userDetails.getUser().getId().equals(team.getTeamManager()))){
             throw new CustomException(ErrorCode.INVALID_AUTHORITY);
         }
-        if (user.getNickname().equals(team.getTeamManager())){
+        if (user.getId().equals(team.getTeamManager())){
             throw new CustomException(ErrorCode.TEAM_MANAGER_CONFLICT);
         }
         TeamUser teamUser = teamUserRepository.findAllByTeamIdAndUserId(teamId, user.getId());
@@ -242,7 +246,7 @@ public class TeamService {
         if (user == null){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
-        if (user.getNickname().equals(team.getTeamManager())){
+        if (user.getId().equals(team.getTeamManager())){
             throw new CustomException(ErrorCode.TEAM_MANAGER_CONFLICT);
         }
         TeamUser teamUser = teamUserRepository.findAllByTeamIdAndUserId(teamId, user.getId());
@@ -256,20 +260,20 @@ public class TeamService {
     public ResponseEntity changeTeamManager(NicknameRequestDto nicknameRequestDto,
                                             Long teamId,
                                             UserDetailsImpl userDetails){
-        String user = nicknameRequestDto.getNickname();
-        User user1 = userRepository.findUserByNickname(user);
+        String nickname = nicknameRequestDto.getNickname();
+        User user1 = userRepository.findUserByNickname(nickname);
         if (user1 == null){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
         Team team = teamRepository.findTeamById(teamId);
-        if (!(userDetails.getUser().getNickname().equals(team.getTeamManager()))){
+        if (!(userDetails.getUser().getId().equals(team.getTeamManager()))){
             throw new CustomException(ErrorCode.INVALID_AUTHORITY);
         }
 
 
-        team.setTeamManager(user);
+        team.setTeamManager(user1.getId());
         teamRepository.save(team);
-        return ResponseEntity.ok(user+" 님이"+team.getTeamname()+" 팀의 팀장이 되었습니다");
+        return ResponseEntity.ok(user1.getNickname()+" 님이"+team.getTeamname()+" 팀의 팀장이 되었습니다");
     }
 
     public ResponseEntity teamProfileImage(Long teamId, MultipartFile multipartFile)throws IOException{
