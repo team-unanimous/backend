@@ -8,25 +8,26 @@ import java.util.List;
 @Getter
 public class TeamUserMainResponseDto {
 
+
     private Long teamid;
 
     private String teamname;
 
-    private String teamManager;
+    private Long teamManagerId;
     private String teamImage;
 
-    private String teamManger;
+    private String teamManager;
 
     private String uuid;
     private List<NicknameResponseDto> user;
 
-    public TeamUserMainResponseDto(Team team, List<NicknameResponseDto> nicknameResponseDtos) {
+    public TeamUserMainResponseDto(Team team,String teamManager, List<NicknameResponseDto> nicknameResponseDtos) {
         this.teamid = team.getId();
         this.teamname = team.getTeamname();
-        this.teamManger = team.getTeamManager();
+        this.teamManagerId = team.getTeamManager();
+        this.teamManager = teamManager;
         this.uuid = team.getUuid();
         this.teamImage = team.getTeamImage().getTeamImageUrl();
         this.user = nicknameResponseDtos;
-        this.teamManager = team.getTeamManager();
     }
 }

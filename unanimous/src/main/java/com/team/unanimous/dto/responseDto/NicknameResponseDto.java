@@ -21,11 +21,4 @@ public class NicknameResponseDto {
         this.username = user.getUsername();
         this.profileImage = image.getImageUrl();
     }
-
-    public NicknameResponseDto(User user) {
-        this.userId = user.getId();
-        this.nickname = user.getNickname();
-        this.username = user.getUsername();
-    }
-
 }
