@@ -1,8 +1,8 @@
 <img src="https://user-images.githubusercontent.com/103565931/182819115-406a7a8d-cb0d-4e46-acd0-71c3ad3a1595.png" width="100%" align=left width=50 >
 
 
-<br>
-
+<p>
+</p>
 `"Unanimous는 캐쥬얼한 디자인을 기반으로 편안한 분위기의 미팅룸을 개설하여 직원들(친구들)과 소통 할 수 있게끔 도와주고 회의를 진행하면서 그 즉시 안건에대한 내용을 정리 할 수 있게끔 도와주는 서비스입니다"`
 
 <img src="https://user-images.githubusercontent.com/103565931/182823100-5fdea7ee-1447-438d-8511-6b443da80705.jpg" width="2%"> **[Unanimous 바로 가기](https://unanimous.co.kr/)**
